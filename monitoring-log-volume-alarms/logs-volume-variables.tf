@@ -11,6 +11,6 @@ variable "sns_topic_arn" {
 
 variable "env_description" {
   description = "Short environment description"
-  type = string
-  default = "()"
+  type        = string
+  default     = "()"
 }

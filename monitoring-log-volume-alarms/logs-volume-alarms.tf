@@ -13,7 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_log_events_anomaly" {
 
   metric_query {
     id          = "ad1"
-    expression  = "ANOMALY_DETECTION_BAND(m1, 2)"
+    expression  = "ANOMALY_DETECTION_BAND(m1, 3)"
     label       = "IncomingLogEvents (expected)"
     return_data = "true"
   }
@@ -49,7 +49,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_bytes_anomaly" {
 
   metric_query {
     id          = "ad1"
-    expression  = "ANOMALY_DETECTION_BAND(m1, 2)"
+    expression  = "ANOMALY_DETECTION_BAND(m1, 3)"
     label       = "IncomingBytes (expected)"
     return_data = "true"
   }
