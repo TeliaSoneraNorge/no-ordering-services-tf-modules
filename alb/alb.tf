@@ -14,7 +14,7 @@ module "alb_security_group" {
 
 
   ingress_cidr_blocks = var.cidr_blocks
-  ingress_rules       = ["https-443-tcp", "all-icmp", "http-80-tcp"]
+  ingress_rules       = ["https-443-tcp"]
   egress_rules        = ["all-all"]
   tags = merge(
     var.tags,
