@@ -4,6 +4,7 @@ const ssm = require('./ssm.js');
 const aas = require('./aas.js');
 
 const PARAMETER_STORE_KEY = "/StopStartService/SystemIsStopped";
+const PARAMETER_STORE_KEY_SKIP_ACTIONS = "/StopStartService/SkipActions"
 
 exports.handler = async (event) => {
     let error = null;
@@ -22,6 +23,11 @@ exports.handler = async (event) => {
         statusCode: 200,
         body: "200 OK",
     };
+
+
+    if (await skipActions()) {
+        return response;
+    }
 
     try {
         switch (action) {
@@ -56,6 +62,30 @@ exports.handler = async (event) => {
     return response;
 };
 
+/**
+ *
+ *  Check if SSM parameter /StopStartService/SkipActions has been defined and set to true
+ */
+const skipActions = async () => {
+    try {
+
+        let paramExists = await ssm.paramExists(PARAMETER_STORE_KEY_SKIP_ACTIONS);
+        console.log(PARAMETER_STORE_KEY_SKIP_ACTIONS + " exists " + paramExists);
+        if (paramExists) {
+            let skipActions =  await ssm.readParam(PARAMETER_STORE_KEY_SKIP_ACTIONS);
+            console.log("skipActions = " + skipActions);
+            if (skipActions==='true') {
+                console.log("Action will be skiped, in case you want to change the behaviour pls change SSM parameter " + PARAMETER_STORE_KEY_SKIP_ACTIONS);
+                return true;
+            }
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+    return false;
+}
+
 const startSystem = async response => {
     if (await isSystemStopped()) {
         console.log("Starting system resources.");
@@ -72,6 +102,7 @@ const startSystem = async response => {
 };
 
 const stopSystem = async () => {
+
     console.log("Stopping system resources.");
     await ecs.stopClusters();
     await aas.stopScalableServices();
