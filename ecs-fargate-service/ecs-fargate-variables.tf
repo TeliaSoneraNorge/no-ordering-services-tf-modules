@@ -267,3 +267,9 @@ variable "policy_task_role" {
   type        = string
   default     = ""
 }
+
+variable "deregistration_delay" {
+  description = "The amount of time for Elastic Load Balancing to wait before deregistering a target."
+  type        = number
+  default     = 300
+}
