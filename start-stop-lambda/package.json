@@ -2,9 +2,9 @@
   "name": "start-stop-lambda",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config=jest.unit-tests.config.js --silent=false"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/TeliaSoneraNorge/neo-product-aws#readme",
   "devDependencies": {
-    "aws-sdk": "^2.849.0"
+    "aws-sdk": "^2.849.0",
+    "jest": "^27.0.4"
   }
 }
