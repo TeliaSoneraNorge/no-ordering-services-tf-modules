@@ -271,5 +271,5 @@ variable "policy_task_role" {
 variable "deregistration_delay" {
   description = "The amount of time for Elastic Load Balancing to wait before deregistering a target."
   type        = number
-  default     = 300
+  default     = 60
 }
