@@ -267,3 +267,9 @@ variable "policy_task_role" {
   type        = string
   default     = ""
 }
+
+variable deregistration_delay {
+  description = "The time to wait for in-flight requests to complete while deregistering a target. During this time, the state of the target is draining."
+  type = number
+  default = 60
+}
