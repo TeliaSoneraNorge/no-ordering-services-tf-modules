@@ -36,7 +36,8 @@ resource "aws_iam_role_policy" "custom" {
 
 # blue TG is used always, either in ECS standard deployment or canary deployment
 resource "aws_lb_target_group" "blue" {
-  name                 = "${var.name_prefix}-blue"
+  # TG name cannot be longer than 32 characters
+  name                 = format("%s%s",length(var.name_prefix) > 27 ? substr(var.name_prefix, 0, 27) : var.name_prefix,"-blue")
   vpc_id               = var.vpc_id
   protocol             = var.task_container_protocol
   port                 = var.task_container_port
@@ -76,7 +77,8 @@ resource "aws_lb_target_group" "blue" {
 # green TG is used only in canary deployment
 resource "aws_lb_target_group" "green" {
   for_each             = var.deployment_controller_type == "CODE_DEPLOY" ? toset(["canary"]) : toset([])
-  name                 = "${var.name_prefix}-green"
+  # TG name cannot be longer than 32 characters
+  name                 = format("%s%s",length(var.name_prefix) > 26 ? substr(var.name_prefix, 0, 26) : var.name_prefix,"-green")
   vpc_id               = var.vpc_id
   protocol             = var.task_container_protocol
   port                 = var.task_container_port
