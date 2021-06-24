@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const applicationAutoScaling = new AWS.ApplicationAutoScaling({ apiVersion: '2016-02-06' });
+const applicationAutoScaling = new AWS.ApplicationAutoScaling({apiVersion: '2016-02-06'});
 const ssm = require('./ssm.js');
 
 const SERVICE_NAMESPACE = 'ecs';
@@ -13,8 +13,8 @@ exports.startScalableServices = async () => {
     const backup = await ssm.readParam(PARAMETER_STORE_KEY);
     const services = JSON.parse(backup);
     const promises = [];
-    services.ScalableTargets.forEach(service => {
-        promises.push(updateScalableService(service.ServiceNamespace, service.ResourceId, service.ScalableDimension, service.MinCapacity, service.MaxCapacity));
+    services.forEach(service => {
+        promises.push(updateScalableService(SERVICE_NAMESPACE, service.ResourceId, service.ScalableDimension, service.MinCapacity, service.MaxCapacity));
     });
     const results = await Promise.all(promises);
     await ssm.deleteParam(PARAMETER_STORE_KEY);
@@ -28,8 +28,8 @@ exports.stopScalableServices = async () => {
     }
     const services = await listScalableServices(SERVICE_NAMESPACE);
     const promises = [];
-    services.ScalableTargets.forEach(service => {
-        promises.push(updateScalableService(service.ServiceNamespace, service.ResourceId, service.ScalableDimension, 0, 0));
+    services.forEach(service => {
+        promises.push(updateScalableService(SERVICE_NAMESPACE, service.ResourceId, service.ScalableDimension, 0, 0));
     });
     const results = await Promise.all(promises);
     const backup = JSON.stringify(services);
@@ -47,7 +47,13 @@ const listScalableServices = async serviceNamespace => {
                 console.log(err, err.stack);
                 reject(err);
             } else { // successful response
-                resolve(data);
+                let services = data.ScalableTargets.map(item => ({
+                    MaxCapacity: item.MaxCapacity,
+                    MinCapacity: item.MinCapacity,
+                    ResourceId: item.ResourceId,
+                    ScalableDimension: item.ScalableDimension
+                }));
+                resolve(services);
             }
         });
     });
