@@ -111,6 +111,7 @@ locals {
 }
 
 resource "aws_security_group_rule" "ingress_internal_fargate_custom_port" {
+  #transfor to map first
   for_each = { for obj in local.ports_sg : format("%s/%s", obj.port, obj.sgid) => obj }
 
   security_group_id        = aws_security_group.main.id
