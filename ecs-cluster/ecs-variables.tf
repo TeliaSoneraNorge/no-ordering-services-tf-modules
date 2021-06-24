@@ -25,3 +25,11 @@ variable "alb_security_group_ids" {
   description = "The security group IDs of Application Load Balancers"
   type        = list(string)
 }
+
+variable "sg_custom_ports" {
+  description = "Custom ports that should be accepted in the service SGs"
+  type        = list(string)
+  default     = []
+}
+
+
