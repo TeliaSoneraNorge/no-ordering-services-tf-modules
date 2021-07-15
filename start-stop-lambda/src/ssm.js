@@ -25,14 +25,14 @@ exports.readParam = async (key) => {
 };
 
 
-exports.writeParam = async (key, value, tier) => {
+exports.writeParam = async (key, value, tier='Standard', overwrite = false) => {
     return new Promise((resolve, reject) => {
         let params = {
           Name: key, /* required */
           Type: "String", /* required */
           Value: value, /* required */
-          Tier: tier ? tier : 'Standard'
-          //Overwrite: true,
+          Tier: tier,
+          Overwrite: overwrite
         };
 
        

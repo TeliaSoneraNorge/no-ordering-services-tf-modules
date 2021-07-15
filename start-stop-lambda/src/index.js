@@ -24,7 +24,7 @@ exports.handler = async (event) => {
         body: "200 OK",
     };
 
-
+    //this code skip the action if /StopStartService/SkipActions == true and sets the parameter to false
     if (await skipActions()) {
         return response;
     }
@@ -64,7 +64,8 @@ exports.handler = async (event) => {
 
 /**
  *
- *  Check if SSM parameter /StopStartService/SkipActions has been defined and set to true
+ *  Check if SSM parameter /StopStartService/SkipActions has been defined and set to 'true'
+ *  If the parameter was 'true' set it to 'false'
  */
 const skipActions = async () => {
     try {
@@ -75,7 +76,8 @@ const skipActions = async () => {
             let skipActions =  await ssm.readParam(PARAMETER_STORE_KEY_SKIP_ACTIONS);
             console.log("skipActions = " + skipActions);
             if (skipActions==='true') {
-                console.log("Action will be skiped, in case you want to change the behaviour pls change SSM parameter " + PARAMETER_STORE_KEY_SKIP_ACTIONS);
+                console.log("Action will be skiped, setting SSM parameter " + PARAMETER_STORE_KEY_SKIP_ACTIONS + "to true so next time the action will not be skipped");
+                await ssm.writeParam(PARAMETER_STORE_KEY_SKIP_ACTIONS, "false", "Standard", true);
                 return true;
             }
         }
