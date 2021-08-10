@@ -58,6 +58,10 @@ resource "aws_db_parameter_group" "custom_parameters" {
     }
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = var.tags
 }
 
