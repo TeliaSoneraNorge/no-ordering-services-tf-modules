@@ -101,7 +101,7 @@ resource "aws_route53_record" "aaaa" {
 
 resource "aws_lb_listener_rule" "fixed_rule_is_aws" {
   for_each     = var.enabled_fixed_rule_is_aws ? toset(["is_aws"]) : toset([])
-  listener_arn = module.alb.this_alb_https_listener_arns[0]
+  listener_arn = module.alb.https_listener_arns[0]
   action {
     type = "fixed-response"
 
