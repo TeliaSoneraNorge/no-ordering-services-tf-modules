@@ -85,3 +85,10 @@ variable "idle_timeout" {
   type        = number
   default     = 150
 }
+
+variable "enabled_fixed_rule_is_aws" {
+  description = "Enable fixed rule (path based routing) for paths */actuator/aws* and return true in JSON format. Can be used to find if a traffic goes through AWS ALB"
+  type        = bool
+  default     = false
+}
+
