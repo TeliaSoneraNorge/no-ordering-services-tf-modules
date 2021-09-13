@@ -1,6 +1,6 @@
 variable "number_of_images_to_retain" {
   description = "Number of images maintained in repository"
-  default     = 3
+  default     = 5
   type        = number
 }
 
