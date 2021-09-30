@@ -5,6 +5,7 @@ const aas = require('./aas.js');
 
 const PARAMETER_STORE_KEY = "/StopStartService/SystemIsStopped";
 const PARAMETER_STORE_KEY_SKIP_ACTIONS = "/StopStartService/SkipActions"
+const PARAMETER_STORE_KEY_SKIP_SERVICES = "/StopStartService/SkipServices"
 
 exports.handler = async (event) => {
     let error = null;
@@ -29,13 +30,15 @@ exports.handler = async (event) => {
         return response;
     }
 
+    let servicesToSkip = await fetchServicesToSkip();
+
     try {
         switch (action) {
             case "start":
-                await startSystem(response);
+                await startSystem(response, servicesToSkip);
                 break;
             case "stop":
-                await stopSystem();
+                await stopSystem(servicesToSkip);
                 break;
             case "status":
                 await getSystemStatus(response);
@@ -88,12 +91,12 @@ const skipActions = async () => {
     return false;
 }
 
-const startSystem = async response => {
+const startSystem = async (response, servicesToSkip) => {
     if (await isSystemStopped()) {
         console.log("Starting system resources.");
         await rds.startRdsInstances();
-        await ecs.startClusters();
-        await aas.startScalableServices();
+        await ecs.startClusters(servicesToSkip);
+        await aas.startScalableServices(servicesToSkip);
 
         await ssm.deleteParam(PARAMETER_STORE_KEY);
         console.log("System resources successfuly started.");
@@ -103,11 +106,11 @@ const startSystem = async response => {
     }
 };
 
-const stopSystem = async () => {
+const stopSystem = async (servicesToSkip) => {
 
     console.log("Stopping system resources.");
-    await ecs.stopClusters();
-    await aas.stopScalableServices();
+    await ecs.stopClusters(servicesToSkip);
+    await aas.stopScalableServices(servicesToSkip);
     await rds.stopRdsInstances();
 
     if (!(await isSystemStopped())) {
@@ -126,6 +129,14 @@ const getSystemStatus = async response => {
         console.log("System resources started.");
         response.body = "200 OK - System started.";
     }
+};
+
+const fetchServicesToSkip = async () => {
+    if (await ssm.paramExists(PARAMETER_STORE_KEY_SKIP_SERVICES)) {
+        let skipServices = await ssm.readParam(PARAMETER_STORE_KEY_SKIP_SERVICES);
+        return skipServices.split(',');
+    }
+    return [];
 };
 
 /**

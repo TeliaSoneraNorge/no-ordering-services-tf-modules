@@ -2,25 +2,25 @@ const AWS = require("aws-sdk");
 const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
 const ssm = require('./ssm.js');
 
-exports.stopClusters = async () => {
+exports.stopClusters = async servicesToSkip => {
     let clusterArns = await getClusterNames();
     let clusterNames = extractNamesFromArns(clusterArns);
 
     for (let i = 0; i < clusterNames.length; i++) {
         console.log("Stopping tasks in cluster: " + clusterNames[i]);
-        await stopTasks(clusterNames[i]);
-    };
+        await stopTasks(clusterNames[i], servicesToSkip);
+    }
 };
 
-exports.startClusters = async () => {
+exports.startClusters = async servicesToSkip => {
     let clusterArns = await getClusterNames();
     let clusterNames = extractNamesFromArns(clusterArns);
 
     for (let i = 0; i < clusterNames.length; i++) {
         console.log("Starting tasks in cluster: " + clusterNames[i]);
-        await startTasks(clusterNames[i]);
+        await startTasks(clusterNames[i], servicesToSkip);
         await ssm.deleteParam("/StopStartService/ECS/" + clusterNames[i] + "/NumberOfRunningTasks");
-    };
+    }
 };
 
 const getClusterNames = async () => {
@@ -35,17 +35,17 @@ const getClusterNames = async () => {
 }
 
 
-const stopTasks = async (clusterName) => {
+const stopTasks = async (clusterName, servicesToSkip) => {
     let allServiceARNs = await getNeoEcsServiceList(clusterName);
-    let allServiceNames = extractNamesFromArns(allServiceARNs);
+    let allServiceNames = extractNamesFromArns(allServiceARNs).filter(name => servicesToSkip.indexOf(name) === -1);
 
     await storeNumberOfTasksToSsm(clusterName, allServiceNames);
     await stopServiceTasks(clusterName, allServiceNames);
 };
 
-const startTasks = async (clusterName) => {
+const startTasks = async (clusterName, servicesToSkip) => {
     let allServiceARNs = await getNeoEcsServiceList(clusterName);
-    let allServiceNames = extractNamesFromArns(allServiceARNs);
+    let allServiceNames = extractNamesFromArns(allServiceARNs).filter(name => servicesToSkip.indexOf(name) === -1);
     let taskNumbers = await getNumberOfTasksFromSsm(clusterName);
 
     await startServiceTasks(clusterName, allServiceNames, taskNumbers);

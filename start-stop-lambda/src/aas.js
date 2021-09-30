@@ -5,7 +5,7 @@ const ssm = require('./ssm.js');
 const SERVICE_NAMESPACE = 'ecs';
 const PARAMETER_STORE_KEY = "/StopStartService/stopApplicationAutoScaling/state";
 
-exports.startScalableServices = async () => {
+exports.startScalableServices = async servicesToSkip => {
     if (!(await ssm.paramExists(PARAMETER_STORE_KEY))) {
         console.error("Services are already started. Skipping operation.");
         return;
@@ -13,7 +13,7 @@ exports.startScalableServices = async () => {
     const backup = await ssm.readParam(PARAMETER_STORE_KEY);
     const services = JSON.parse(backup);
     const promises = [];
-    services.forEach(service => {
+    services.filter(service => notIn(service, servicesToSkip)).forEach(service => {
         promises.push(updateScalableService(SERVICE_NAMESPACE, service.ResourceId, service.ScalableDimension, service.MinCapacity, service.MaxCapacity));
     });
     const results = await Promise.all(promises);
@@ -21,14 +21,19 @@ exports.startScalableServices = async () => {
     return results;
 };
 
-exports.stopScalableServices = async () => {
+const notIn = (service, servicesToSkip) => {
+    let serviceName = service.ResourceId.substr(service.ResourceId.lastIndexOf('/') + 1);
+    return servicesToSkip.indexOf(serviceName) === -1;
+}
+
+exports.stopScalableServices = async servicesToSkip => {
     if (await ssm.paramExists(PARAMETER_STORE_KEY)) {
         console.error("Services are already stopped. Skipping operation.");
         return;
     }
     const services = await listScalableServices(SERVICE_NAMESPACE);
     const promises = [];
-    services.forEach(service => {
+    services.filter(service => notIn(service, servicesToSkip)).forEach(service => {
         promises.push(updateScalableService(SERVICE_NAMESPACE, service.ResourceId, service.ScalableDimension, 0, 0));
     });
     const results = await Promise.all(promises);
