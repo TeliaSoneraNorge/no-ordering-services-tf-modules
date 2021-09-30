@@ -131,6 +131,11 @@ const getSystemStatus = async response => {
     }
 };
 
+/**
+ * Reads list of services from SSM parameter store which should be excluded from start/stop tasks.
+ * Expected format in SSM parameter store: Comma separated list of services like this: st1-price-master-ui,st1-account-manager
+ * @returns list of services to skip
+ */
 const fetchServicesToSkip = async () => {
     if (await ssm.paramExists(PARAMETER_STORE_KEY_SKIP_SERVICES)) {
         let skipServices = await ssm.readParam(PARAMETER_STORE_KEY_SKIP_SERVICES);
