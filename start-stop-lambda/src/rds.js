@@ -2,31 +2,35 @@ const AWS = require("aws-sdk");
 const rds = new AWS.RDS({apiVersion: '2014-10-31'});
 const ssm = require('./ssm.js');
 
-exports.stopRdsInstances = async () => { 
-    
+exports.stopRdsInstances = async rdsInstancesToSkip => {
     let rdsInstanceInfos = await getDBInstanceInfo();
-    
+
     console.log("Stopping RDS instances:");
-    for(let rdsInstanceInfo of rdsInstanceInfos){
-        if(rdsInstanceInfo.DBInstanceStatus === "available")
+    rdsInstanceInfos = rdsInstanceInfos.filter(rdsInstanceInfo => notIn(rdsInstanceInfo, rdsInstancesToSkip));
+    for (let rdsInstanceInfo of rdsInstanceInfos) {
+        if (rdsInstanceInfo.DBInstanceStatus === "available")
             await stopDbInstance(rdsInstanceInfo.DBInstanceIdentifier);
         else
-            console.log(rdsInstanceInfo.DBInstanceIdentifier+" already stopped.");
+            console.log(rdsInstanceInfo.DBInstanceIdentifier + " already stopped.");
     }
 };
 
-exports.startRdsInstances = async () => { 
-    
+exports.startRdsInstances = async rdsInstancesToSkip => {
     let rdsInstanceInfos = await getDBInstanceInfo();
-    
+
     console.log("Starting RDS instances:");
-    for(let rdsInstanceInfo of rdsInstanceInfos){
-        if(rdsInstanceInfo.DBInstanceStatus === "stopped")
+    rdsInstanceInfos = rdsInstanceInfos.filter(rdsInstanceInfo => notIn(rdsInstanceInfo, rdsInstancesToSkip));
+    for (let rdsInstanceInfo of rdsInstanceInfos) {
+        if (rdsInstanceInfo.DBInstanceStatus === "stopped")
             await startDbInstance(rdsInstanceInfo.DBInstanceIdentifier);
         else
-            console.log(rdsInstanceInfo.DBInstanceIdentifier+" already started.");
+            console.log(rdsInstanceInfo.DBInstanceIdentifier + " already started.");
     }
 };
+
+const notIn = (rdsInstanceInfo, rdsInstancesToSkip) => {
+    return rdsInstancesToSkip.indexOf(rdsInstanceInfo.DBInstanceIdentifier) === -1;
+}
 
 const getDBInstanceInfo = async () => {
     
