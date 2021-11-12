@@ -27,4 +27,20 @@ data "aws_iam_policy_document" "task_permissions" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_exec_for_debugging" {
+  statement {
+    effect = "Allow"
+
+    resources = [
+      "*"
+    ]
+
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel",
+    ]
+  }
+}
 
