@@ -29,6 +29,13 @@ resource "aws_iam_role_policy" "custom" {
 
 }
 
+resource "aws_iam_role_policy" "ecs_exec_for_debugging" {
+  for_each = var.enable_ecs_exec_for_debugging ? toset(["aws_exec"]) : toset([])
+  name     = "${var.name_prefix}_ecs_exec_for_debugging"
+  role     = aws_iam_role.task.id
+  policy   = data.aws_iam_policy_document.ecs_exec_for_debugging.json
+}
+
 
 # ------------------------------------------------------------------------------
 # LB Target groups
@@ -37,7 +44,7 @@ resource "aws_iam_role_policy" "custom" {
 # blue TG is used always, either in ECS standard deployment or canary deployment
 resource "aws_lb_target_group" "blue" {
   # TG name cannot be longer than 32 characters
-  name                 = format("%s%s",length(var.name_prefix) > 27 ? substr(var.name_prefix, 0, 27) : var.name_prefix,"-blue")
+  name                 = format("%s%s", length(var.name_prefix) > 27 ? substr(var.name_prefix, 0, 27) : var.name_prefix, "-blue")
   vpc_id               = var.vpc_id
   protocol             = var.task_container_protocol
   port                 = var.task_container_port
@@ -76,9 +83,9 @@ resource "aws_lb_target_group" "blue" {
 
 # green TG is used only in canary deployment
 resource "aws_lb_target_group" "green" {
-  for_each             = var.deployment_controller_type == "CODE_DEPLOY" ? toset(["canary"]) : toset([])
+  for_each = var.deployment_controller_type == "CODE_DEPLOY" ? toset(["canary"]) : toset([])
   # TG name cannot be longer than 32 characters
-  name                 = format("%s%s",length(var.name_prefix) > 26 ? substr(var.name_prefix, 0, 26) : var.name_prefix,"-green")
+  name                 = format("%s%s", length(var.name_prefix) > 26 ? substr(var.name_prefix, 0, 26) : var.name_prefix, "-green")
   vpc_id               = var.vpc_id
   protocol             = var.task_container_protocol
   port                 = var.task_container_port
@@ -281,6 +288,7 @@ resource "aws_ecs_service" "service" {
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
   deployment_maximum_percent         = var.deployment_maximum_percent
   health_check_grace_period_seconds  = var.alb_arn == "" ? null : var.health_check_grace_period_seconds
+  enable_execute_command             = var.enable_ecs_exec_for_debugging
 
   network_configuration {
     subnets          = var.private_subnet_ids
@@ -323,6 +331,3 @@ resource "aws_ecs_service" "service" {
 //  triggers = var.lb_arn == "" ? {} : { alb_name = var.lb_arn }
 //}
 //
-
-
-

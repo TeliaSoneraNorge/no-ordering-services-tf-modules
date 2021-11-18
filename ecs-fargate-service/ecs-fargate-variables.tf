@@ -238,7 +238,7 @@ variable "listener_rule_enable_host_based_routing" {
   default     = false
 }
 
-variable route53_zone_name {
+variable "route53_zone_name" {
   description = "Zone name where service is going to be registered"
   type        = string
   default     = ""
@@ -268,8 +268,15 @@ variable "policy_task_role" {
   default     = ""
 }
 
-variable deregistration_delay {
+variable "deregistration_delay" {
   description = "The time to wait for in-flight requests to complete while deregistering a target. During this time, the state of the target is draining."
-  type = number
-  default = 60
+  type        = number
+  default     = 60
 }
+
+variable "enable_ecs_exec_for_debugging" {
+  description = "Enable direct access to Docker container for debugging purpose https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html"
+  type        = bool
+  default     = false
+}
+
