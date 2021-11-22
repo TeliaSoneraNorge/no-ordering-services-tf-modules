@@ -94,6 +94,7 @@ module "rds" {
   vpc_id                   = var.vpc_id
   subnet_ids               = var.database_subnets
   storage_encrypted        = var.storage_encrypted
+  kms_key_id               = var.kms_key_id
   apply_immediately        = var.apply_immediately
   delete_automated_backups = false
   deletion_protection      = var.deletion_protection
@@ -142,3 +143,4 @@ resource "aws_ssm_parameter" "database_password" {
   type  = "SecureString"
   tags  = var.tags
 }
+

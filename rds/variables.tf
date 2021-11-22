@@ -148,6 +148,12 @@ variable "storage_encrypted" {
   type        = bool
 }
 
+variable "kms_key_id" {
+  description = "The ARN for the KMS encryption key. If creating an encrypted replica, set this to the destination KMS ARN."
+  type        = string
+  default     = ""
+}
+
 variable "apply_immediately" {
   description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
   type        = bool
