@@ -142,5 +142,10 @@ resource "aws_ssm_parameter" "database_password" {
   value = local.db_password
   type  = "SecureString"
   tags  = var.tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+
 }
 
