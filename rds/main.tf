@@ -69,19 +69,20 @@ module "rds" {
   source  = "telia-oss/rds-instance/aws"
   version = "4.0.0"
 
-  name_prefix          = local.identifier
-  tags                 = var.tags
-  multi_az             = var.multi_az
-  engine               = var.engine
-  engine_version       = var.engine_version
-  instance_type        = var.instance_class
-  database_name        = var.database_name
-  username             = var.database_username
-  password             = local.db_password
-  port                 = var.database_port
-  allocated_storage    = var.allocated_storage
-  snapshot_identifier  = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
-  parameter_group_name = length(var.parameters) == 0 ? "" : aws_db_parameter_group.custom_parameters[0].id
+  name_prefix           = local.identifier
+  tags                  = var.tags
+  multi_az              = var.multi_az
+  engine                = var.engine
+  engine_version        = var.engine_version
+  instance_type         = var.instance_class
+  database_name         = var.database_name
+  username              = var.database_username
+  password              = local.db_password
+  port                  = var.database_port
+  allocated_storage     = var.allocated_storage
+  max_allocated_storage = var.max_allocated_storage
+  snapshot_identifier   = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
+  parameter_group_name  = length(var.parameters) == 0 ? "" : aws_db_parameter_group.custom_parameters[0].id
 
   # option_group_name       = "${var.option_group_name}"  # options are not used in NEO project neither are implemented in telia-oss
 
