@@ -23,6 +23,12 @@ variable "allocated_storage" {
   type        = string
 }
 
+variable "max_allocated_storage" {
+  description = "Specifies the value for Storage Autoscaling"
+  type        = number
+  default     = 0
+}
+
 variable "instance_class" {
   description = "DB instance class"
   type        = string
