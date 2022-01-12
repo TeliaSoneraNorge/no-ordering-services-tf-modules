@@ -6,9 +6,9 @@ locals {
 
   logs_bucket_tags = merge(
     var.logs_bucket_tags,
-    map("Name", var.global_name),
-    map("Project", var.global_project),
-    map("Environment", var.local_environment)
+    tomap({ "Name" = var.global_name }),
+    tomap({ "Project" = var.global_project }),
+    tomap({ "Environment" = var.local_environment })
   )
 }
 

@@ -1,7 +1,7 @@
 
 locals {
   subnets    = var.alb_is_internal ? var.vpc_private_subnets : var.vpc_public_subnets
-  identifier = join("-", compact(list(var.domain_name, var.environment)))
+  identifier = join("-", compact(tolist([var.domain_name, var.environment])))
 }
 
 module "alb_security_group" {
@@ -73,7 +73,7 @@ data "aws_route53_zone" "this" {
 
 resource "aws_route53_record" "a" {
   zone_id         = data.aws_route53_zone.this.id
-  name            = join(".", compact(list(var.route53_record_prefix, var.route53_zone_name)))
+  name            = join(".", compact(tolist([var.route53_record_prefix, var.route53_zone_name])))
   type            = "A"
   allow_overwrite = true
 
@@ -87,7 +87,7 @@ resource "aws_route53_record" "a" {
 
 resource "aws_route53_record" "aaaa" {
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = join(".", compact(list(var.route53_record_prefix, data.aws_route53_zone.this.name)))
+  name    = join(".", compact(tolist([var.route53_record_prefix, data.aws_route53_zone.this.name])))
   type    = "AAAA"
 
   allow_overwrite = true

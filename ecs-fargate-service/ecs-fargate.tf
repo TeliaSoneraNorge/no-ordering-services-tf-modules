@@ -226,7 +226,7 @@ data "aws_alb" "this" {
 resource "aws_route53_record" "a" {
   for_each = var.listener_rule_enable_host_based_routing == true ? toset(["service_host"]) : toset([])
   zone_id  = data.aws_route53_zone.this["zone"].id
-  name     = join(".", compact(list(var.application, var.route53_zone_name)))
+  name     = join(".", compact(tolist([var.application, var.route53_zone_name])))
   type     = "A"
 
   allow_overwrite = true
