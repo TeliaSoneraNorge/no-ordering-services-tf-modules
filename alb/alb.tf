@@ -57,7 +57,7 @@ module "alb" {
   access_logs = {
     bucket  = var.logs_s3_bucket_id
     prefix  = "alb"
-    enabled = true
+    enabled = var.enabled_access_logs
   }
 
   tags = merge(

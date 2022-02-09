@@ -74,6 +74,12 @@ variable "logs_s3_bucket_id" {
   type        = string
 }
 
+variable "enabled_access_logs" {
+  description = "Enable ALB access logging to S3 bucket."
+  default     = false
+  type        = bool
+}
+
 variable "acm_certificate_arn" {
   description = "ARN of the SSL certificate"
   type        = string
