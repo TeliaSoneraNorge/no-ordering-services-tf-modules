@@ -83,9 +83,7 @@ module "rds" {
   max_allocated_storage = var.max_allocated_storage
   snapshot_identifier   = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
   parameter_group_name  = length(var.parameters) == 0 ? "" : aws_db_parameter_group.custom_parameters[0].id
-
-  # option_group_name       = "${var.option_group_name}"  # options are not used in NEO project neither are implemented in telia-oss
-
+  option_group_name       = var.option_group_name
   monitoring_interval      = var.monitoring_interval
   monitoring_role_arn      = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : ""
   license_model            = var.license_model

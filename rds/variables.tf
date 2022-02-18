@@ -199,3 +199,9 @@ variable "deletion_protection" {
   type        = bool
   default     = false
 }
+
+variable "option_group_name" {
+  description = "Name of the DB option group to associate."
+  type        = string
+  default     = ""
+}
