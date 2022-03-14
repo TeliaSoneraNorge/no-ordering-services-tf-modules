@@ -35,19 +35,38 @@ resource "aws_s3_bucket" "logs" {
   for_each = var.create_logs_bucket ? toset(["logs_bucket"]) : toset([])
 
   bucket        = local.bucket
-  acl           = "private"
-  policy        = data.aws_iam_policy_document.logs.json
   force_destroy = var.force_destroy
 
-  lifecycle_rule {
-    enabled = var.enable_lifecycle
+  tags = local.logs_bucket_tags
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "logs-expiration" {
+  for_each = aws_s3_bucket.logs
+
+  bucket = each.value.id
+
+  rule {
+    id     = "logs-expiration"
+    status = "Enabled"
 
     expiration {
       days = var.lifecycle_expire_after
     }
   }
+}
 
-  tags = local.logs_bucket_tags
+resource "aws_s3_bucket_acl" "logs-acl" {
+  for_each = aws_s3_bucket.logs
+
+  bucket = each.value.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_policy" "logs-policy" {
+  for_each = aws_s3_bucket.logs
+
+  bucket = each.value.id
+  policy = data.aws_iam_policy_document.logs.json
 }
 
 resource "aws_s3_bucket_public_access_block" "logs" {
