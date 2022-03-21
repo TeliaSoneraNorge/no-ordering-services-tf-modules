@@ -67,7 +67,7 @@ resource "aws_db_parameter_group" "custom_parameters" {
 
 module "rds" {
   source  = "telia-oss/rds-instance/aws"
-  version = "4.0.0"
+  version = "4.1.0"
 
   name_prefix           = local.identifier
   tags                  = var.tags
