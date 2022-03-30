@@ -74,6 +74,7 @@ resource "aws_lambda_function" "start_stop_lambda" {
   role             = aws_iam_role.start_stop_lambda_role.arn
   source_code_hash = data.archive_file.start_stop_lambda_zip.output_base64sha256
   handler          = "index.handler"
+  architectures    = ["arm64"]
 
   tags = var.tags
 }

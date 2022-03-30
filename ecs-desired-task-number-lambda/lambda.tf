@@ -72,6 +72,7 @@ resource "aws_lambda_function" "desired_task_lambda" {
   role             = aws_iam_role.desired_task_lambda.arn
   source_code_hash = data.archive_file.desired_ecs_task_number_lambda_zip.output_base64sha256
   handler          = "index.handler"
+  architectures    = ["arm64"]
 
   tags = merge(var.common_tags, {
     purpose = "Setting desired task number for ECS service"
