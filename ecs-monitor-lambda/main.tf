@@ -110,6 +110,7 @@ resource "aws_lambda_function" "ecs-monitor-lambda" {
   role             = aws_iam_role.ecs-monitor-lambda.arn
   source_code_hash = data.archive_file.ecs-monitor-lambda_zip.output_base64sha256
   handler          = "src/handlers/ecs-deploy-monitor.monitorHandler"
+  architectures    = ["arm64"]
 
   environment {
     variables = {

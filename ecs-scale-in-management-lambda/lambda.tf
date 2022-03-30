@@ -71,6 +71,7 @@ resource "aws_lambda_function" "scale_in_lambda" {
   role             = aws_iam_role.scale_in_lambda.arn
   source_code_hash = data.archive_file.scale-in-lambda-zip.output_base64sha256
   handler          = "app.lambdaHandler"
+  architectures    = ["arm64"]
 
   tags = merge(var.common_tags, {
     purpose = "Disabling scale in activity of auto-scaling"
