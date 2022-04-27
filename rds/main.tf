@@ -69,34 +69,37 @@ module "rds" {
   source  = "telia-oss/rds-instance/aws"
   version = "4.1.0"
 
-  name_prefix           = local.identifier
-  tags                  = var.tags
-  multi_az              = var.multi_az
-  engine                = var.engine
-  engine_version        = var.engine_version
-  instance_type         = var.instance_class
-  database_name         = var.database_name
-  username              = var.database_username
-  password              = local.db_password
-  port                  = var.database_port
-  allocated_storage     = var.allocated_storage
-  max_allocated_storage = var.max_allocated_storage
-  snapshot_identifier   = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
-  parameter_group_name  = length(var.parameters) == 0 ? "" : aws_db_parameter_group.custom_parameters[0].id
-  option_group_name       = var.option_group_name
-  monitoring_interval      = var.monitoring_interval
-  monitoring_role_arn      = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : ""
-  license_model            = var.license_model
-  maintenance_window       = var.maintenance_window
-  backup_window            = var.backup_window
-  backup_retention_period  = var.backup_retention_period
-  vpc_id                   = var.vpc_id
-  subnet_ids               = var.database_subnets
-  storage_encrypted        = var.storage_encrypted
-  kms_key_id               = var.kms_key_id
-  apply_immediately        = var.apply_immediately
-  delete_automated_backups = false
-  deletion_protection      = var.deletion_protection
+  name_prefix                           = local.identifier
+  tags                                  = var.tags
+  multi_az                              = var.multi_az
+  engine                                = var.engine
+  engine_version                        = var.engine_version
+  instance_type                         = var.instance_class
+  database_name                         = var.database_name
+  username                              = var.database_username
+  password                              = local.db_password
+  port                                  = var.database_port
+  allocated_storage                     = var.allocated_storage
+  max_allocated_storage                 = var.max_allocated_storage
+  snapshot_identifier                   = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
+  parameter_group_name                  = length(var.parameters) == 0 ? "" : aws_db_parameter_group.custom_parameters[0].id
+  option_group_name                     = var.option_group_name
+  monitoring_interval                   = var.monitoring_interval
+  monitoring_role_arn                   = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : ""
+  license_model                         = var.license_model
+  maintenance_window                    = var.maintenance_window
+  backup_window                         = var.backup_window
+  backup_retention_period               = var.backup_retention_period
+  vpc_id                                = var.vpc_id
+  subnet_ids                            = var.database_subnets
+  storage_encrypted                     = var.storage_encrypted
+  kms_key_id                            = var.kms_key_id
+  apply_immediately                     = var.apply_immediately
+  delete_automated_backups              = false
+  deletion_protection                   = var.deletion_protection
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_retention_period = var.performance_insights_retention_period
+
 }
 
 resource "aws_security_group_rule" "allow_vpc_subnets" {
