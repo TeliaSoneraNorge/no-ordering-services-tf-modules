@@ -84,13 +84,7 @@ const startDbInstance = async (name) => {
 };
 
 const waitOnDbInstanceAvailable = async (dbIdentifier) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-            DBInstanceIdentifier : dbIdentifier
-        };
-        rds.waitFor('dBInstanceAvailable', params, (err, data) => {
-            if (err) reject(err, err.stack); // an error occurred
-            else     resolve(data);           // successful response
-        });
-    });
+    return rds.waitFor('dBInstanceAvailable', {
+        DBInstanceIdentifier: dbIdentifier
+    }).promise();
 }
