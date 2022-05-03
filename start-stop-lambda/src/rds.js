@@ -19,13 +19,15 @@ exports.startRdsInstances = async rdsInstancesToSkip => {
 
     console.log("Starting RDS instances:");
     rdsInstanceInfos = rdsInstanceInfos.filter(rdsInstanceInfo => notIn(rdsInstanceInfo, rdsInstancesToSkip));
+    let promises = [];
     for (let rdsInstanceInfo of rdsInstanceInfos) {
         if (rdsInstanceInfo.DBInstanceStatus === "stopped") {
-            await startDbInstance(rdsInstanceInfo.DBInstanceIdentifier);
-            await waitOnDbInstanceAvailable(rdsInstanceInfo.DBInstanceIdentifier);
+            promises.push(startDbInstance(rdsInstanceInfo.DBInstanceIdentifier));
+            promises.push(waitOnDbInstanceAvailable(rdsInstanceInfo.DBInstanceIdentifier));
         } else
             console.log(rdsInstanceInfo.DBInstanceIdentifier + " already started.");
     }
+    await Promise.all(promises);
 };
 
 const notIn = (rdsInstanceInfo, rdsInstancesToSkip) => {
