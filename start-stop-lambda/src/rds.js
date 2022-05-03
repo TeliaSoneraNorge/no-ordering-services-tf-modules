@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk");
 const rds = new AWS.RDS({apiVersion: '2014-10-31'});
-const ssm = require('./ssm.js');
 
 exports.stopRdsInstances = async rdsInstancesToSkip => {
     let rdsInstanceInfos = await getDBInstanceInfo();
@@ -21,9 +20,10 @@ exports.startRdsInstances = async rdsInstancesToSkip => {
     console.log("Starting RDS instances:");
     rdsInstanceInfos = rdsInstanceInfos.filter(rdsInstanceInfo => notIn(rdsInstanceInfo, rdsInstancesToSkip));
     for (let rdsInstanceInfo of rdsInstanceInfos) {
-        if (rdsInstanceInfo.DBInstanceStatus === "stopped")
+        if (rdsInstanceInfo.DBInstanceStatus === "stopped") {
             await startDbInstance(rdsInstanceInfo.DBInstanceIdentifier);
-        else
+            await waitOnDbInstanceAvailable(rdsInstanceInfo.DBInstanceIdentifier);
+        } else
             console.log(rdsInstanceInfo.DBInstanceIdentifier + " already started.");
     }
 };
@@ -82,3 +82,9 @@ const startDbInstance = async (name) => {
         });
     });
 };
+
+const waitOnDbInstanceAvailable = async (dbIdentifier) => {
+    return rds.waitFor('dBInstanceAvailable', {
+        DBInstanceIdentifier: dbIdentifier
+    }).promise();
+}
