@@ -68,7 +68,7 @@ resource "aws_lambda_function" "start_stop_lambda" {
   description   = "Lambda function for stopping/starting environment's resources to saving costs."
   filename      = data.archive_file.start_stop_lambda_zip.output_path
   memory_size   = 128
-  timeout       = 30
+  timeout       = 900
 
   runtime          = "nodejs14.x"
   role             = aws_iam_role.start_stop_lambda_role.arn
