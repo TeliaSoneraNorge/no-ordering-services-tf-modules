@@ -4,7 +4,6 @@ const ssm = require('./ssm.js');
 const aas = require('./aas.js');
 const ec2 = require('./ec2.js');
 
-
 const PARAMETER_STORE_KEY = "/StopStartService/SystemIsStopped";
 const PARAMETER_STORE_KEY_SKIP_ACTIONS = "/StopStartService/SkipActions";
 const PARAMETER_STORE_KEY_SKIP_SERVICES = "/StopStartService/SkipECSServices";
@@ -98,7 +97,6 @@ const skipActions = async () => {
 }
 
 const startSystem = async (response, ecsServicesToSkip, rdsInstancesToSkip) => {
-
     if (await isSystemStopped()) {
         console.log("Starting system resources.");
         await rds.startRdsInstances(rdsInstancesToSkip);
@@ -125,8 +123,6 @@ const stopSystem = async (ecsServicesToSkip, rdsInstancesToSkip, ec2InstancesToS
     if (!(await isSystemStopped())) {
         await ssm.writeParam(PARAMETER_STORE_KEY, "true");
     }
-
-
     console.log("System resources sucessfuly stoped.");
 };
 
