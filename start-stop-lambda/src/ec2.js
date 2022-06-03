@@ -7,7 +7,6 @@ const SSM_PARAM_NAME = "/StopStartService/EC2/stopped";
 exports.stopEC2Instances = async ec2InstancesToSkip => {
     let ec2InstanceInfos = await getEC2InstanceInfo();
     let instancesToStop = []
-    let paramaterStoreValue = "";
     console.log("Stopping EC2 instances:");
     ec2InstanceInfos = ec2InstanceInfos.filter(ec2InstanceInfo => notIn(ec2InstanceInfo, ec2InstancesToSkip));
     for (let ec2InstanceInfo of ec2InstanceInfos) {
