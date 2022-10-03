@@ -1,4 +1,3 @@
-
 data "aws_region" "current" {}
 
 resource "aws_ecs_cluster" "cluster" {
@@ -81,6 +80,47 @@ resource "aws_security_group_rule" "ingress_internal_fargate_80" {
   source_security_group_id = var.alb_security_group_ids[count.index]
 }
 
+# custom ports part
+# prepare a combination of port and SG id
+# As a result it will produce something like that
+/*"ports_sg" = [
+  {
+    "port" = "111"
+    "sgid" = (known after apply)
+  },
+  {
+    "port" = "222"
+    "sgid" = (known after apply)
+  },
+  {
+    "port" = "333"
+    "sgid" = (known after apply)
+  },
+]*/
+
+locals {
+  ports_sg = flatten(
+  [for port in var.sg_custom_ports :
+  [for sgid in var.alb_security_group_ids :
+  {
+    port = port
+    sgid = sgid
+  }
+  ]
+  ])
+}
+
+resource "aws_security_group_rule" "ingress_internal_fargate_custom_port" {
+  #transfor to map first
+  for_each = { for obj in local.ports_sg : format("%s/%s", obj.port, obj.sgid) => obj }
+
+  security_group_id        = aws_security_group.main.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = each.value["port"]
+  to_port                  = each.value["port"]
+  source_security_group_id = each.value["sgid"]
+}
 
 resource "aws_security_group_rule" "egress_internal" {
   security_group_id = aws_security_group.main.id
@@ -98,6 +138,5 @@ resource "aws_security_group_rule" "egress_internal" {
     "::/0",
   ]
 }
-
 
 
