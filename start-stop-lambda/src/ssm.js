@@ -1,5 +1,8 @@
 const AWS = require("aws-sdk");
-const ssm = new AWS.SSM({apiVersion: '2014-11-06'});
+const ssm = new AWS.SSM({
+    apiVersion: '2014-11-06',
+    maxRetries: 20
+});
 
 
 exports.readParam = async (key) => {
