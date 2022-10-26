@@ -45,6 +45,12 @@ resource "aws_iam_role_policy" "task_execution" {
   policy = data.aws_iam_policy_document.task_execution_permissions.json
 }
 
+resource "aws_iam_role_policy_attachment" "custom_policy" {
+  for_each   = toset(var.task_execution_custom_policy_arn_list)
+  policy_arn = each.value
+  role       = aws_iam_role.execution.name
+}
+
 # ------------------------------------------------------------------------------
 # IAM - Security group for services
 # ------------------------------------------------------------------------------
@@ -98,6 +104,3 @@ resource "aws_security_group_rule" "egress_internal" {
     "::/0",
   ]
 }
-
-
-

@@ -25,3 +25,9 @@ variable "alb_security_group_ids" {
   description = "The security group IDs of Application Load Balancers"
   type        = list(string)
 }
+
+variable "task_execution_custom_policy_arn_list" {
+  description = "List of strings containing policy arns which should be attached to the task execution role"
+  type        = list(string)
+  default     = []
+}
