@@ -29,8 +29,8 @@ variable "replication_group_id" {
   type        = string
 }
 
-variable "replication_group_description" {
-  description = "Description of replication group."
+variable "description" {
+  description = "User-created description for the replication group."
   type        = string
 }
 
@@ -64,8 +64,8 @@ variable "port" {
   type        = string
 }
 
-variable "number_cache_clusters" {
-  description = "Number of nodes in cache cluster."
+variable "num_cache_clusters" {
+  description = "Number of cache clusters (primary and replicas)."
   type        = number
 }
 

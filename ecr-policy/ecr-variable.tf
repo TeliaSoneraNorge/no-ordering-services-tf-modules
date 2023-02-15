@@ -6,5 +6,5 @@ variable "number_of_images_to_retain" {
 
 variable "ecr_repositories" {
   description = "List of repositories where the policy will be applied"
-  type        = list
+  type        = list(any)
 }

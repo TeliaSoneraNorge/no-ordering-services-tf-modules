@@ -13,22 +13,22 @@ resource "aws_ssm_parameter" "secret" {
 }
 
 resource "aws_elasticache_replication_group" "redis" {
-  depends_on                    = [aws_security_group.redis]
-  automatic_failover_enabled    = var.automatic_failover_enabled
-  replication_group_id          = var.replication_group_id
-  replication_group_description = var.replication_group_description
-  engine                        = "redis"
-  engine_version                = var.engine_version
-  node_type                     = var.node_type
-  number_cache_clusters         = var.number_cache_clusters
-  parameter_group_name          = var.parameter_group_name
-  port                          = var.port
-  security_group_ids            = [aws_security_group.redis.id]
-  subnet_group_name             = aws_elasticache_subnet_group.subnet_group.name
-  at_rest_encryption_enabled    = true
-  transit_encryption_enabled    = true
-  auth_token                    = aws_ssm_parameter.secret.value
-  tags                          = var.tags
+  depends_on                 = [aws_security_group.redis]
+  automatic_failover_enabled = var.automatic_failover_enabled
+  replication_group_id       = var.replication_group_id
+  description                = var.description
+  engine                     = "redis"
+  engine_version             = var.engine_version
+  node_type                  = var.node_type
+  num_cache_clusters         = var.num_cache_clusters
+  parameter_group_name       = var.parameter_group_name
+  port                       = var.port
+  security_group_ids         = [aws_security_group.redis.id]
+  subnet_group_name          = aws_elasticache_subnet_group.subnet_group.name
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
+  auth_token                 = aws_ssm_parameter.secret.value
+  tags                       = var.tags
 }
 
 resource "aws_security_group" "redis" {

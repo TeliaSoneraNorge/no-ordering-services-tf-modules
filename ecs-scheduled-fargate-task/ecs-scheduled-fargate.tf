@@ -49,9 +49,9 @@ resource "aws_cloudwatch_event_rule" "scheduled-event-rule" {
   name                = "${var.name_prefix}-rule"
   schedule_expression = var.task_schedule_expression
   tags                = var.tags
-//  lifecycle {
-//    ignore_changes = [schedule_expression]
-//  }
+  //  lifecycle {
+  //    ignore_changes = [schedule_expression]
+  //  }
 }
 
 resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
