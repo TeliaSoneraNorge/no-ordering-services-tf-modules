@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 Changes related to redis sub-module.
 
 ### Added
-- [CHANGELOG.md](https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/CHANGELOG.md)
+- [CHANGELOG.md](https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/blob/master/CHANGELOG.md)
 
 ### Changed
 - [SUB-MODULE, REDIS](https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/issues/38)
