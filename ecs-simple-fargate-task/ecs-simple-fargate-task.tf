@@ -7,10 +7,10 @@ resource "aws_iam_role" "task" {
   name               = "${var.name_prefix}-task-role"
   assume_role_policy = data.aws_iam_policy_document.task_assume.json
   tags = merge(
-  var.tags,
-  {
-    Purpose = "Role used for ECS task"
-  }
+    var.tags,
+    {
+      Purpose = "Role used for ECS task"
+    }
   )
 }
 
@@ -37,17 +37,17 @@ data "aws_region" "current" {}
 
 locals {
   task_environment = [
-  for k, v in var.task_container_environment : {
-    name  = k
-    value = v
-  }
+    for k, v in var.task_container_environment : {
+      name  = k
+      value = v
+    }
   ]
 
   task_environment_secret = [
-  for k, v in var.task_container_secrets : {
-    name      = k
-    valueFrom = v
-  }
+    for k, v in var.task_container_secrets : {
+      name      = k
+      valueFrom = v
+    }
   ]
 
 }
