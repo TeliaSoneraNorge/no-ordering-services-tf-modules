@@ -1,0 +1,4 @@
+pytest-mock
+pytest-watch
+pytest
+boto3
