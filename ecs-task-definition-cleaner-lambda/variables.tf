@@ -6,6 +6,11 @@ variable "tags" {
 variable "lambda_layers" {
   description = "Lambda layers attached cleaner lambda"
   type        = list(any)
-  default = []
+  default     = []
 }
 
+variable "old_revision_count" {
+  description = "How many old revisions should be preserved"
+  type        = string
+  default     = "10"
+}

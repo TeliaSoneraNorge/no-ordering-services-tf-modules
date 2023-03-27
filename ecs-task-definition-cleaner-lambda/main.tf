@@ -86,7 +86,7 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
 
   environment {
     variables = {
-      OLD_REVISION_COUNT = "10"
+      OLD_REVISION_COUNT = var.old_revision_count
     }
   }
 
