@@ -82,7 +82,7 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
   source_code_hash = data.archive_file.ecs_cleaner_lambda_zip.output_base64sha256
   handler          = "main.lambda_handler"
   architectures    = ["arm64"]
-
+  layers           = var.lambda_layers
 
   environment {
     variables = {
