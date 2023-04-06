@@ -39,10 +39,14 @@ class EcsTasksDefCleaner:
         all_revisions = self.__get_all_task_revisions(family)
         to_delete = []
 
-        #TF state check
-
+        #TF state check, if not successfull delete the last revision
         if len(all_revisions) > 0:
-            tf_state_revision = self.__get_revision_referenced_in_tf_state(family)
+            tf_state_revision = None
+            try:
+                tf_state_revision = self.__get_revision_referenced_in_tf_state(family)
+            except Exception as e:
+                print(f"Problem to check Terraform state: {e}")
+
             if tf_state_revision is not None:
                 print(f"Skipping revisions referenced in TF state {tf_state_revision}")
                 all_revisions.remove(tf_state_revision)
@@ -74,7 +78,6 @@ class EcsTasksDefCleaner:
                     return True
             return False
 
-        ret = []
         for s3_state_object in self.s3_tf_state_files.split(","):
             state_content = self.__get_s3_object(self.s3_tf_state_bucket, s3_state_object)
             json_state = json.loads(state_content)

@@ -16,15 +16,15 @@ variable "old_revision_count" {
 }
 
 #implemented in relation to the bug https://github.com/hashicorp/terraform-provider-aws/issues/29749
-variable "s3_tf_state_files_for_checking_ref" {
-  description = "Terraform S3 state files URI used for checking existing references, pls separate files with comma"
+variable "s3_tf_state_objects" {
+  description = "Terraform S3 state objects used for checking existing references, pls separate objects with comma"
   type        = string
   default     = ""
 }
 
-variable "s3_tf_state_buckets" {
-  description = "Terraform S3 state buckets (used by IAM)"
-  type        = list(string)
-  default     = []
+variable "s3_tf_state_bucket" {
+  description = "Terraform S3 state bucket"
+  type        = string
+  default     = ""
 }
 

@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = var.s3_tf_state_buckets
+    for_each = var.s3_tf_state_bucket != "" ? toset([var.s3_tf_state_bucket]) : toset([])
     content {
       effect = "Allow"
 
@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
   }
 
   dynamic "statement" {
-    for_each = var.s3_tf_state_buckets
+    for_each = var.s3_tf_state_bucket != "" ? toset([var.s3_tf_state_bucket]) : toset([])
     content {
 
       effect = "Allow"
@@ -111,8 +111,10 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
 
   environment {
     variables = {
-      OLD_REVISION_COUNT                 = var.old_revision_count
-      S3_TF_STATE_FILES_FOR_CHECKING_REF = var.s3_tf_state_files_for_checking_ref
+      OLD_REVISION_COUNT  = var.old_revision_count
+      S3_TF_STATE_BUCKET  = var.s3_tf_state_bucket
+      S3_TF_STATE_OBJECTS = var.s3_tf_state_objects
+
     }
   }
 
