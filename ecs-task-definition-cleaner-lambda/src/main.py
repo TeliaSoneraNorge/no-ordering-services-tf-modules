@@ -3,13 +3,15 @@ import os
 from cleaner import EcsTasksDefCleaner
 
 OLD_REVISION_COUNT = os.environ['OLD_REVISION_COUNT']
+S3_TF_STATE_OBJECTS = os.environ['S3_TF_STATE_OBJECTS']
+S3_TF_STATE_BUCKET = os.environ['S3_TF_STATE_BUCKET']
 
 ssm = boto3.client('ssm')
 
 def lambda_handler(event, context):
     ecs_cluster_name, ecs_service_name, old_revision_count, dry_run = get_parameters(event)
 
-    cleaner = EcsTasksDefCleaner( old_revision_count=old_revision_count, dry_run=dry_run )
+    cleaner = EcsTasksDefCleaner( old_revision_count=old_revision_count, s3_tf_state_bucket=S3_TF_STATE_BUCKET, s3_tf_state_objects=S3_TF_STATE_OBJECTS, dry_run=dry_run )
     cleaner.clean_for_service(ecs_cluster_name, ecs_service_name)
 
     return {
