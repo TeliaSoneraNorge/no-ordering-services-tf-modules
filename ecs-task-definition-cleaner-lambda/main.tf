@@ -81,6 +81,19 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
       resources = ["arn:aws:s3:::${statement.value}/*"]
     }
   }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_bucket_kms_arn != "" ? toset([var.s3_tf_state_bucket_kms_arn]) : toset([])
+    content {
+
+      effect = "Allow"
+
+      actions = [
+        "kms:Decrypt"
+      ]
+      resources = [statement.value]
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "ecs_cleaner_role_policy" {

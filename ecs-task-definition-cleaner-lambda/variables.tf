@@ -28,3 +28,8 @@ variable "s3_tf_state_bucket" {
   default     = ""
 }
 
+variable "s3_tf_state_bucket_kms_arn" {
+  description = "KMS arn for the Terraform S3 state bucket"
+  type        = string
+  default     = ""
+}
