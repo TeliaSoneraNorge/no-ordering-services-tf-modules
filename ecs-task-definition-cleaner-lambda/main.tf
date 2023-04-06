@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
       actions = [
         "s3:ListBucket"
       ]
-      resources = ["arn:aws:s3:::${each.value}"]
+      resources = ["arn:aws:s3:::${statement.value}"]
     }
   }
 
@@ -78,7 +78,7 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
       actions = [
         "s3:GetObject"
       ]
-      resources = ["arn:aws:s3:::${each.value}/*"]
+      resources = ["arn:aws:s3:::${statement.value}/*"]
     }
   }
 }
