@@ -56,6 +56,34 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
       "*",
     ]
   }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_buckets
+    content {
+      statement {
+        effect = "Allow"
+
+        actions = [
+          "s3:ListBucket"
+        ]
+        resources = ["arn:aws:s3:::${each.value}"]
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_buckets
+    content {
+      statement {
+        effect = "Allow"
+
+        actions = [
+          "s3:GetObject"
+        ]
+        resources = ["arn:aws:s3:::${each.value}/*"]
+      }
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "ecs_cleaner_role_policy" {
@@ -86,7 +114,8 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
 
   environment {
     variables = {
-      OLD_REVISION_COUNT = "10"
+      OLD_REVISION_COUNT                 = "10"
+      S3_TF_STATE_FILES_FOR_CHECKING_REF = var.s3_tf_state_files_for_checking_ref
     }
   }
 
