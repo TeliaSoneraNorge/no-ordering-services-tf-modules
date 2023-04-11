@@ -1,4 +1,4 @@
-import boto3
+import boto3, json
 
 
 class EcsTasksDefCleaner:
@@ -7,12 +7,15 @@ class EcsTasksDefCleaner:
     Will not touch the first revision (most likely is in TF state) and the currently deployed
     """
 
-    def __init__(self, old_revision_count=10, dry_run=True):
+    def __init__(self, old_revision_count=10, s3_tf_state_bucket="", s3_tf_state_objects="", dry_run=True):
         self.old_revision_count = int(old_revision_count)
         self.client = boto3.client("ecs")
+        self.s3_resource = boto3.Session().resource('s3')
         self.dry_run = dry_run
         self.deregistered_count = 0
         self.removed_count = 0
+        self.s3_tf_state_files = s3_tf_state_objects
+        self.s3_tf_state_bucket = s3_tf_state_bucket
 
     def clean_for_service(self, ecs_cluster_name, ecs_service_name):
 
@@ -36,10 +39,20 @@ class EcsTasksDefCleaner:
         all_revisions = self.__get_all_task_revisions(family)
         to_delete = []
 
-        # skip the last element from the list (the oldest revision) because most likely is in TF state
+        #TF state check, if not successfull delete the last revision
         if len(all_revisions) > 0:
-            print(f"Skipping the element due to TF state: {all_revisions[-1]}")
-            all_revisions.pop()
+            tf_state_revision = None
+            try:
+                tf_state_revision = self.__get_revision_referenced_in_tf_state(family)
+            except Exception as e:
+                print(f"Problem to check Terraform state: {e}")
+
+            if tf_state_revision is not None:
+                print(f"Skipping revisions referenced in TF state {tf_state_revision}")
+                all_revisions.remove(tf_state_revision)
+            else:
+                print(f"Skipping the oldest element {all_revisions[-1]}")
+                all_revisions.pop()
 
         # skip deployed revision
         if deployed_revision in all_revisions:
@@ -53,6 +66,27 @@ class EcsTasksDefCleaner:
         print(f"Number of revisions to be deleted = {len(to_delete)}")
 
         return to_delete
+
+    def __get_revision_referenced_in_tf_state(self, family):
+
+        if self.s3_tf_state_bucket == "" or self.s3_tf_state_files == "":
+            return None
+
+        def filter_task_def(resource):
+            if resource["type"] == "aws_ecs_task_definition":
+                if family in resource["instances"][0]["attributes"]["arn"]:
+                    return True
+            return False
+
+        for s3_state_object in self.s3_tf_state_files.split(","):
+            state_content = self.__get_s3_object(self.s3_tf_state_bucket, s3_state_object)
+            json_state = json.loads(state_content)
+            resources_list = json_state["resources"]
+            filtered = list(filter(filter_task_def, resources_list))
+            if len(filtered) > 0:
+                return filtered[0]["instances"][0]["attributes"]["arn"]
+
+        return None
 
     def __get_all_task_revisions(self, family):
         response_active = self.__get_task_revisions_for_service(family, "ACTIVE")
@@ -77,6 +111,12 @@ class EcsTasksDefCleaner:
             sort="DESC"
         )
         return response
+
+    def __get_s3_object(self, bucket, object):
+
+        obj = self.s3_resource.Object(bucket, object)
+        file_content = obj.get()['Body'].read().decode('utf-8')
+        return file_content
 
     def __delete_revisions(self, revisions_to_delete):
 

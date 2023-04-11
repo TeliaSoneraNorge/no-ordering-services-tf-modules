@@ -56,6 +56,44 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
       "*",
     ]
   }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_bucket != "" ? toset([var.s3_tf_state_bucket]) : toset([])
+    content {
+      effect = "Allow"
+
+      actions = [
+        "s3:ListBucket"
+      ]
+      resources = ["arn:aws:s3:::${statement.value}"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_bucket != "" ? toset([var.s3_tf_state_bucket]) : toset([])
+    content {
+
+      effect = "Allow"
+
+      actions = [
+        "s3:GetObject"
+      ]
+      resources = ["arn:aws:s3:::${statement.value}/*"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.s3_tf_state_bucket_kms_arn != "" ? toset([var.s3_tf_state_bucket_kms_arn]) : toset([])
+    content {
+
+      effect = "Allow"
+
+      actions = [
+        "kms:Decrypt"
+      ]
+      resources = [statement.value]
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "ecs_cleaner_role_policy" {
@@ -86,7 +124,10 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
 
   environment {
     variables = {
-      OLD_REVISION_COUNT = var.old_revision_count
+      OLD_REVISION_COUNT  = var.old_revision_count
+      S3_TF_STATE_BUCKET  = var.s3_tf_state_bucket
+      S3_TF_STATE_OBJECTS = var.s3_tf_state_objects
+
     }
   }
 

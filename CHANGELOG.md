@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.12] - 2023-04-11
+ECS task definitions cleaner fix, checking TF state references
+
 ## [1.1.11] - 2023-03-27
 Added ECS task definitions cleaner
 
@@ -22,7 +25,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.10...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.12...master
+
+[1.1.12]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.11...v1.1.12
 
 [1.1.11]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.10...v1.1.11
 
