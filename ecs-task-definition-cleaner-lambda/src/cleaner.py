@@ -47,7 +47,7 @@ class EcsTasksDefCleaner:
             except Exception as e:
                 print(f"Problem to check Terraform state: {e}")
 
-            if tf_state_revision is not None:
+            if tf_state_revision is not None and tf_state_revision in all_revisions:
                 print(f"Skipping revisions referenced in TF state {tf_state_revision}")
                 all_revisions.remove(tf_state_revision)
             else:
