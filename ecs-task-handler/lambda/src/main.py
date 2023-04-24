@@ -16,6 +16,8 @@ FAILING_INTERVAL_IN_MINUTES = int(os.getenv('FAILING_INTERVAL_IN_MINUTES'))
 MAX_FAILING_COUNT = int(os.getenv('MAX_FAILING_COUNT'))
 DYNAMODB_ITEMS_TTL = int(os.getenv('DYNAMODB_ITEMS_TTL'))
 SNS_ARN = os.getenv("SNS_ARN")
+NOTIFY_ON_FAILING = os.getenv("NOTIFY_ON_FAILING")
+SHUTDOWN_ON_FAILING = os.getenv("SHUTDOWN_ON_FAILING")
 
 ecs_client = boto3.client("ecs")
 sns_client = boto3.client('sns')
@@ -23,7 +25,7 @@ sns_client = boto3.client('sns')
 
 def lambda_handler(event, context):
     logger.info(f'event: {event}')
-
+     
     try:
         service, execution_stopped_at, ttl, cluster_arn = extract_details_from_event(event)
 
@@ -33,17 +35,17 @@ def lambda_handler(event, context):
         dynamodb.put_ecs_task_failing_group(DYNAMO_DB_TABLE, service, execution_stopped_at, ttl)
 
         if evaluate_service_shutdown_prerequisite(events, service, execution_stopped_at):
-            shutdown_service(service.split(':')[1], cluster_arn)
+            if "enabled" == NOTIFY_ON_FAILING:
+                sns_notify("ECS Task Failing Notification", f"Service: {service} is constantly failing to start.")
+            if "enabled" == SHUTDOWN_ON_FAILING:
+                shutdown_service(service.split(':')[1], cluster_arn)
 
     except Exception as e:
         logger.error(f'ECS service check for container infinite restarts failed: {event}')
         logger.error(e)
+        subject = "ECS Task Failing Error"
         message = f"Service: {service} shutdown failed."
-        sns_client.publish(
-            Subject="ECS Task Failing Error",
-            TopicArn=SNS_ARN,
-            Message=message
-        )
+        sns_notify(subject, message)
 
 
 def extract_details_from_event(event):
@@ -73,4 +75,12 @@ def shutdown_service(service_name, cluster):
         cluster=cluster,
         service=service_name,
         desiredCount=0
+    )
+
+
+def sns_notify(subject, message):
+    sns_client.publish(
+        Subject=subject,
+        TopicArn=SNS_ARN,
+        Message=message
     )

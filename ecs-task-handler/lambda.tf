@@ -34,6 +34,8 @@ resource "aws_lambda_function" "ecs_task_failing_handler_lambda" {
       FAILING_INTERVAL_IN_MINUTES = var.failing_interval_in_minutes,
       MAX_FAILING_COUNT = var.max_failing_count
       DYNAMODB_ITEMS_TTL = var.dynamodb_items_ttl_in_hours
+      NOTIFY_ON_FAILING = var.notify_on_failing
+      SHUTDOWN_ON_FAILING = var.shutdown_on_failing
       SNS_ARN = var.sns_arn
     }
   }

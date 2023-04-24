@@ -37,6 +37,18 @@ variable "dynamodb_items_ttl_in_hours" {
   default = 24
 }
 
+variable "notify_on_failing" {
+  description = " 'enabled' if message should be sent to SNS when service has been marked for shutdown"
+  type = string
+  default = "enabled"
+}
+
+variable "shutdown_on_failing" {
+  description = " 'enabled' if service shall be terminated once marked for shutdown."
+  type = string
+  default = "disabled"
+}
+
 variable "enable_strong_consistence_read" {
   description = "If true, local secondary index will be created"
   type = bool

@@ -3,11 +3,11 @@
     "id": "b552d98b-9ef6-9805-04d6-e37a1a07c837",
     "detail-type": "ECS Task State Change",
     "source": "aws.ecs",
-    "account": "964833175661",
+    "account": "12345",
     "time": "2023-04-18T07:52:07Z",
     "region": "eu-west-1",
     "resources": [
-        "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9"
+        "arn:aws:ecs:eu-west-1:12345:task/some-cluster/ds564dfg564dfg65"
     ],
     "detail": {
         "attachments": [
@@ -24,7 +24,7 @@
                 "details": [
                     {
                         "name": "subnetId",
-                        "value": "subnet-00e97b2bc1f958209"
+                        "value": "subnet-0ddgdsg"
                     },
                     {
                         "name": "networkInterfaceId",
@@ -56,19 +56,19 @@
             }
         ],
         "availabilityZone": "eu-west-1b",
-        "clusterArn": "arn:aws:ecs:eu-west-1:964833175661:cluster/st1-cluster",
+        "clusterArn": "arn:aws:ecs:eu-west-1:12345:cluster/some-cluster",
         "connectivity": "CONNECTED",
         "connectivityAt": "2023-04-18T04:16:21.216Z",
         "containers": [
             {
-                "containerArn": "arn:aws:ecs:eu-west-1:964833175661:container/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9/f5864cb1-61eb-4fbb-8c05-2fe0a17382b6",
+                "containerArn": "arn:aws:ecs:eu-west-1:12345:container/some-cluster/ds564dfg564dfg65/f5864cb1-61eb-4fbb-8c05-2fe0a17382b6",
                 "exitCode": 143,
                 "lastStatus": "STOPPED",
-                "name": "st1-order-capture-manager",
-                "image": "964833175661.dkr.ecr.eu-west-1.amazonaws.com/order-capture-manager:2.2.259",
+                "name": "env-service-name",
+                "image": "12345.dkr.ecr.eu-west-1.amazonaws.com/service-name:2.2.259",
                 "imageDigest": "sha256:970f144442dd56ea0fb2edadc3ba2a4c7b15833f10b41e7e077b9750db29a993",
-                "runtimeId": "4e9fd94750464051ad6f56b4c7ffb0d9-2421821217",
-                "taskArn": "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9",
+                "runtimeId": "ds564dfg564dfg65-2421821217",
+                "taskArn": "arn:aws:ecs:eu-west-1:12345:task/some-cluster/ds564dfg564dfg65",
                 "networkInterfaces": [
                     {
                         "attachmentId": "897a0a2b-df44-47ab-94ce-939aa848c5db",
@@ -87,14 +87,14 @@
             "sizeInGiB": 20
         },
         "executionStoppedAt": "2023-04-21T16:51:45.388Z",
-        "group": "service:st1-order-capture-manager",
+        "group": "service:env-service-name",
         "launchType": "FARGATE",
         "lastStatus": "STOPPED",
         "memory": "1024",
         "overrides": {
             "containerOverrides": [
                 {
-                    "name": "st1-order-capture-manager"
+                    "name": "env-service-name"
                 }
             ]
         },
@@ -107,8 +107,8 @@
         "stoppedAt": "2023-04-18T07:52:07.226Z",
         "stoppedReason": "Scaling activity initiated by (deployment ecs-svc/5168067726027882097)",
         "stopCode": "ServiceSchedulerInitiated",
-        "taskArn": "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9",
-        "taskDefinitionArn": "arn:aws:ecs:eu-west-1:964833175661:task-definition/st1-order-capture-manager:271",
+        "taskArn": "arn:aws:ecs:eu-west-1:12345:task/some-cluster/ds564dfg564dfg65",
+        "taskDefinitionArn": "arn:aws:ecs:eu-west-1:12345:task-definition/env-service-name:271",
         "updatedAt": "2023-04-18T07:52:07.226Z",
         "version": 8
     }
