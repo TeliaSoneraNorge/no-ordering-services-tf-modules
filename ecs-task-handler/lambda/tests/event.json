@@ -1,0 +1,115 @@
+{
+    "version": "0",
+    "id": "b552d98b-9ef6-9805-04d6-e37a1a07c837",
+    "detail-type": "ECS Task State Change",
+    "source": "aws.ecs",
+    "account": "964833175661",
+    "time": "2023-04-18T07:52:07Z",
+    "region": "eu-west-1",
+    "resources": [
+        "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9"
+    ],
+    "detail": {
+        "attachments": [
+            {
+                "id": "0247a356-003c-4d1d-ad29-836ba3624115",
+                "type": "elb",
+                "status": "DELETED",
+                "details": []
+            },
+            {
+                "id": "897a0a2b-df44-47ab-94ce-939aa848c5db",
+                "type": "eni",
+                "status": "DELETED",
+                "details": [
+                    {
+                        "name": "subnetId",
+                        "value": "subnet-00e97b2bc1f958209"
+                    },
+                    {
+                        "name": "networkInterfaceId",
+                        "value": "eni-0074e5ac6d0e8aa1a"
+                    },
+                    {
+                        "name": "macAddress",
+                        "value": "0a:72:e9:ce:13:a7"
+                    },
+                    {
+                        "name": "privateDnsName",
+                        "value": "ip-10-24-49-137.eu-west-1.compute.internal"
+                    },
+                    {
+                        "name": "privateIPv4Address",
+                        "value": "10.24.49.137"
+                    },
+                    {
+                        "name": "ipv6Address",
+                        "value": "2a05:d018:f0c:d101:1a9f:f4d3:cc6e:d241"
+                    }
+                ]
+            }
+        ],
+        "attributes": [
+            {
+                "name": "ecs.cpu-architecture",
+                "value": "x86_64"
+            }
+        ],
+        "availabilityZone": "eu-west-1b",
+        "clusterArn": "arn:aws:ecs:eu-west-1:964833175661:cluster/st1-cluster",
+        "connectivity": "CONNECTED",
+        "connectivityAt": "2023-04-18T04:16:21.216Z",
+        "containers": [
+            {
+                "containerArn": "arn:aws:ecs:eu-west-1:964833175661:container/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9/f5864cb1-61eb-4fbb-8c05-2fe0a17382b6",
+                "exitCode": 143,
+                "lastStatus": "STOPPED",
+                "name": "st1-order-capture-manager",
+                "image": "964833175661.dkr.ecr.eu-west-1.amazonaws.com/order-capture-manager:2.2.259",
+                "imageDigest": "sha256:970f144442dd56ea0fb2edadc3ba2a4c7b15833f10b41e7e077b9750db29a993",
+                "runtimeId": "4e9fd94750464051ad6f56b4c7ffb0d9-2421821217",
+                "taskArn": "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9",
+                "networkInterfaces": [
+                    {
+                        "attachmentId": "897a0a2b-df44-47ab-94ce-939aa848c5db",
+                        "privateIpv4Address": "10.24.49.137",
+                        "ipv6Address": "2a05:d018:f0c:d101:1a9f:f4d3:cc6e:d241"
+                    }
+                ],
+                "cpu": "0"
+            }
+        ],
+        "cpu": "256",
+        "createdAt": "2023-04-18T04:16:17.895Z",
+        "desiredStatus": "STOPPED",
+        "enableExecuteCommand": false,
+        "ephemeralStorage": {
+            "sizeInGiB": 20
+        },
+        "executionStoppedAt": "2023-04-21T16:51:45.388Z",
+        "group": "service:st1-order-capture-manager",
+        "launchType": "FARGATE",
+        "lastStatus": "STOPPED",
+        "memory": "1024",
+        "overrides": {
+            "containerOverrides": [
+                {
+                    "name": "st1-order-capture-manager"
+                }
+            ]
+        },
+        "platformVersion": "1.4.0",
+        "pullStartedAt": "2023-04-18T04:16:29.482Z",
+        "pullStoppedAt": "2023-04-18T04:16:37.519Z",
+        "startedAt": "2023-04-18T04:16:48.726Z",
+        "startedBy": "ecs-svc/5168067726027882097",
+        "stoppingAt": "2023-04-18T07:51:00.363Z",
+        "stoppedAt": "2023-04-18T07:52:07.226Z",
+        "stoppedReason": "Scaling activity initiated by (deployment ecs-svc/5168067726027882097)",
+        "stopCode": "ServiceSchedulerInitiated",
+        "taskArn": "arn:aws:ecs:eu-west-1:964833175661:task/st1-cluster/4e9fd94750464051ad6f56b4c7ffb0d9",
+        "taskDefinitionArn": "arn:aws:ecs:eu-west-1:964833175661:task-definition/st1-order-capture-manager:271",
+        "updatedAt": "2023-04-18T07:52:07.226Z",
+        "version": 8
+    }
+}
