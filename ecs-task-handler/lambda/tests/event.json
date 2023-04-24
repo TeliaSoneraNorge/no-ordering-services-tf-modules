@@ -36,11 +36,11 @@
                     },
                     {
                         "name": "privateDnsName",
-                        "value": "ip-10-24-49-137.eu-west-1.compute.internal"
+                        "value": "ip-1.2.3.4.eu-west-1.compute.internal"
                     },
                     {
                         "name": "privateIPv4Address",
-                        "value": "10.24.49.137"
+                        "value": "1.2.3.4"
                     },
                     {
                         "name": "ipv6Address",
@@ -72,7 +72,7 @@
                 "networkInterfaces": [
                     {
                         "attachmentId": "897a0a2b-df44-47ab-94ce-939aa848c5db",
-                        "privateIpv4Address": "10.24.49.137",
+                        "privateIpv4Address": "1.2.3.4",
                         "ipv6Address": "2a05:d018:f0c:d101:1a9f:f4d3:cc6e:d241"
                     }
                 ],

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.13] - 2023-04-24
+ECS task failing handler
+
+### Added
+- Terraform/Python code to shutdown or notify about service constantly failing to start
+- Terraform code implementing ECS deployment circuit breaker feature
+
 ## [1.1.13] - 2023-04-11
 ECS task definitions cleaner, checking TF state references fix
 
@@ -28,7 +35,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.13...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.14...master
+
+[1.1.14]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.13...v1.1.14
 
 [1.1.13]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.12...v1.1.13
 
@@ -39,4 +48,3 @@ Changes related to redis sub-module.
 [1.1.10]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.9...v1.1.10
 
 [1.1.9]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.8...v1.1.9
-
