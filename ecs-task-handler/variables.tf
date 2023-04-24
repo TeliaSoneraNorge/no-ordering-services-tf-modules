@@ -37,6 +37,12 @@ variable "dynamodb_items_ttl_in_hours" {
   default = 24
 }
 
+variable "enable_strong_consistence_read" {
+  description = "If true, local secondary index will be created"
+  type = bool
+  default = false
+}
+
 variable "sns_arn" {
   description = "SNS to be used when error occurs"
   type = string
