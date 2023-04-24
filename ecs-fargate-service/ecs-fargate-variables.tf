@@ -209,6 +209,18 @@ variable "security_groups_ids" {
   type        = list(string)
 }
 
+variable "enable_deployment_circuit_breaker" {
+  description = "tru(enable)/false(disable) deployment_circuit_breaker to prevent restarting task when deployment is not successful"
+  type        = bool
+  default     = false
+}
+
+variable "enable_deployment_circuit_breaker_rollback" {
+  description = "Whether to enable Amazon ECS to roll back the service if a service deployment fails. If rollback is enabled, when a service deployment fails, the service is rolled back to the last deployment that completed successfully."
+  type        = bool
+  default     = false
+}
+
 variable "deployment_controller_type" {
   default     = "ECS"
   type        = string

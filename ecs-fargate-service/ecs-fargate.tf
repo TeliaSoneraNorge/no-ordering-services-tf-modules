@@ -305,6 +305,14 @@ resource "aws_ecs_service" "service" {
     }
   }
 
+  dynamic "deployment_circuit_breaker" {
+    for_each = var.enable_deployment_circuit_breaker == true ? [1] : []
+    content {
+      enable   = var.enable_deployment_circuit_breaker
+      rollback = var.enable_deployment_circuit_breaker_rollback
+    }
+  }
+
   deployment_controller {
     # The deployment controller type to use. Valid values: CODE_DEPLOY, ECS.
     type = var.deployment_controller_type
