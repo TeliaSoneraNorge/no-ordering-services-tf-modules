@@ -25,20 +25,21 @@ sns_client = boto3.client('sns')
 
 def lambda_handler(event, context):
     logger.info(f'event: {event}')
-     
+
     try:
         service, execution_stopped_at, ttl, cluster_arn = extract_details_from_event(event)
 
-        events = dynamodb.get_ecs_task_failing_items_by_service_in_failing_interval(DYNAMO_DB_TABLE, service,
-                                                                                    MAX_FAILING_COUNT,
-                                                                                    FAILING_INTERVAL_IN_MINUTES)
-        dynamodb.put_ecs_task_failing_group(DYNAMO_DB_TABLE, service, execution_stopped_at, ttl)
+        if get_current_desired_count(service, cluster_arn) > 0:
+            events = dynamodb.get_ecs_task_failing_items_by_service_in_failing_interval(DYNAMO_DB_TABLE, service,
+                                                                                        MAX_FAILING_COUNT,
+                                                                                        FAILING_INTERVAL_IN_MINUTES)
+            dynamodb.put_ecs_task_failing_group(DYNAMO_DB_TABLE, service, execution_stopped_at, ttl)
 
-        if evaluate_service_shutdown_prerequisite(events, service, execution_stopped_at):
-            if "enabled" == NOTIFY_ON_FAILING:
-                sns_notify("ECS Task Failing Notification", f"Service: {service} is constantly failing to start.")
-            if "enabled" == SHUTDOWN_ON_FAILING:
-                shutdown_service(service.split(':')[1], cluster_arn)
+            if evaluate_service_shutdown_prerequisite(events, service, execution_stopped_at):
+                if "enabled" == NOTIFY_ON_FAILING:
+                    sns_notify("ECS Task Failing Notification", f"Service: {service} is constantly failing to start.")
+                if "enabled" == SHUTDOWN_ON_FAILING:
+                    shutdown_service(service, cluster_arn)
 
     except Exception as e:
         logger.error(f'ECS service check for container infinite restarts failed: {event}')
@@ -49,7 +50,7 @@ def lambda_handler(event, context):
 
 
 def extract_details_from_event(event):
-    service = event['detail']['group']
+    service = event['detail']['group'].split(':')[1]
     execution_stopped_at = event['detail']['executionStoppedAt']
     ttl_datetime = datetime.strptime(execution_stopped_at, "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(
         hours=DYNAMODB_ITEMS_TTL)
@@ -67,6 +68,15 @@ def evaluate_service_shutdown_prerequisite(items, service, execution_stopped_at)
                  })
 
     return len(items) >= MAX_FAILING_COUNT
+
+
+def get_current_desired_count(service, cluster_arn):
+    return ecs_client.describe_services(
+        cluster=cluster_arn,
+        services=[
+            service
+        ]
+    )['services'][0]['desiredCount']
 
 
 def shutdown_service(service_name, cluster):
