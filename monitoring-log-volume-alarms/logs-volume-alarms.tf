@@ -2,18 +2,18 @@ resource "aws_cloudwatch_metric_alarm" "incoming_log_events_anomaly" {
 
   alarm_name                = "Incoming log events to log group ${var.log_group_name} ${var.env_description}"
   comparison_operator       = "GreaterThanUpperThreshold"
-  evaluation_periods        = "6"
+  evaluation_periods        = var.evaluation_periods
   threshold_metric_id       = "ad1"
   alarm_description         = "The alarm is red when the number of incoming log events exceeds the band in the last 30 min (anomaly)"
   insufficient_data_actions = []
   alarm_actions             = [var.sns_topic_arn]
   ok_actions                = [var.sns_topic_arn]
   treat_missing_data        = "ignore"
-  datapoints_to_alarm       = 6
+  datapoints_to_alarm       = var.datapoints_to_alarm
 
   metric_query {
     id          = "ad1"
-    expression  = "ANOMALY_DETECTION_BAND(m1, 3)"
+    expression  = "ANOMALY_DETECTION_BAND(m1,${var.metric_query_band})"
     label       = "IncomingLogEvents (expected)"
     return_data = "true"
   }
@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_log_events_anomaly" {
     metric {
       metric_name = "IncomingLogEvents"
       namespace   = "AWS/Logs"
-      period      = "300"
+      period      =  var.metric_query_period
       stat        = "Average"
 
       dimensions = {
@@ -38,18 +38,18 @@ resource "aws_cloudwatch_metric_alarm" "incoming_bytes_anomaly" {
 
   alarm_name                = "Incoming bytes to log group ${var.log_group_name}"
   comparison_operator       = "GreaterThanUpperThreshold"
-  evaluation_periods        = "6"
+  evaluation_periods        = var.evaluation_periods
   threshold_metric_id       = "ad1"
   alarm_description         = "The alarm is red when the number of incoming bytes exceeds the band in the last 30 min (anomaly)"
   insufficient_data_actions = []
   alarm_actions             = [var.sns_topic_arn]
   ok_actions                = [var.sns_topic_arn]
   treat_missing_data        = "ignore"
-  datapoints_to_alarm       = 6
+  datapoints_to_alarm       = var.datapoints_to_alarm
 
   metric_query {
     id          = "ad1"
-    expression  = "ANOMALY_DETECTION_BAND(m1, 3)"
+    expression  = "ANOMALY_DETECTION_BAND(m1, ${var.metric_query_band})"
     label       = "IncomingBytes (expected)"
     return_data = "true"
   }
@@ -60,7 +60,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_bytes_anomaly" {
     metric {
       metric_name = "IncomingBytes"
       namespace   = "AWS/Logs"
-      period      = "300"
+      period      = var.metric_query_period
       stat        = "Average"
 
       dimensions = {
