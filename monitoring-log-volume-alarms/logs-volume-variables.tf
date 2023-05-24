@@ -19,7 +19,7 @@ variable "env_description" {
 variable "datapoints_to_alarm" {
   type = number
   description = "The number of datapoints that must be breaching to trigger the alarm"
-  default = 6
+  default = 10
 }
 
 variable "evaluation_periods" {
