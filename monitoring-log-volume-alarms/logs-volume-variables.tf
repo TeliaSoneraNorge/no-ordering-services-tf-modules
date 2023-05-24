@@ -19,19 +19,19 @@ variable "env_description" {
 variable "datapoints_to_alarm" {
   type = number
   description = "The number of datapoints that must be breaching to trigger the alarm"
-  default = 10
+  default = 6
 }
 
 variable "evaluation_periods" {
   type = number
   description = "The number of periods over which data is compared to the specified threshold"
-  default = 10
+  default = 6
 }
 
 variable "metric_query_period" {
   type = number
   description = "The number of periods over which data is compared to the specified threshold"
-  default = 900
+  default = 600
 }
 
 variable "metric_query_band" {
