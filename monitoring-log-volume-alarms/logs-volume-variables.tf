@@ -25,13 +25,13 @@ variable "datapoints_to_alarm" {
 variable "evaluation_periods" {
   type = number
   description = "The number of periods over which data is compared to the specified threshold"
-  default = 6
+  default = 10
 }
 
 variable "metric_query_period" {
   type = number
-  description = "The number of periods over which data is compared to the specified threshold"
-  default = 600
+  description = "Metric query period"
+  default = 360 #6min
 }
 
 variable "metric_query_band" {

@@ -4,7 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_log_events_anomaly" {
   comparison_operator       = "GreaterThanUpperThreshold"
   evaluation_periods        = var.evaluation_periods
   threshold_metric_id       = "ad1"
-  alarm_description         = "The alarm is red when the number of incoming log events exceeds the band in the last 30 min (anomaly)"
+  alarm_description         = "The alarm is red when the number of incoming log events exceeds the defined band"
   insufficient_data_actions = []
   alarm_actions             = [var.sns_topic_arn]
   ok_actions                = [var.sns_topic_arn]
@@ -40,7 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_bytes_anomaly" {
   comparison_operator       = "GreaterThanUpperThreshold"
   evaluation_periods        = var.evaluation_periods
   threshold_metric_id       = "ad1"
-  alarm_description         = "The alarm is red when the number of incoming bytes exceeds the band in the last 30 min (anomaly)"
+  alarm_description         = "The alarm is red when the number of incoming bytes exceeds the defined band"
   insufficient_data_actions = []
   alarm_actions             = [var.sns_topic_arn]
   ok_actions                = [var.sns_topic_arn]
