@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.17] - 2023-06-01
+Ability to configure target group stickiness of type app_cookie in ECS fargate service module.
+
 ## [1.1.13] - 2023-04-24
 ECS task failing handler
 
