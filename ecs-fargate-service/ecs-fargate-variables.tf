@@ -292,3 +292,8 @@ variable "enable_ecs_exec_for_debugging" {
   default     = false
 }
 
+variable "stickiness_app_cookie_name" {
+  description = "Name of the application cookie to be used for stickiness. Setting this enabled stickiness of type app_cookie"
+  type        = string
+  default     = ""
+}
