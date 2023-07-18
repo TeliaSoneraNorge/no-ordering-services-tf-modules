@@ -29,7 +29,7 @@ def lambda_handler(event, context):
     try:
         service, execution_stopped_at, ttl, cluster_arn = extract_details_from_event(event)
 
-        if get_current_desired_count(service, cluster_arn) > 0:
+        if service is not None and get_current_desired_count(service, cluster_arn) > 0:
             events = dynamodb.get_ecs_task_failing_items_by_service_in_failing_interval(DYNAMO_DB_TABLE, service,
                                                                                         MAX_FAILING_COUNT,
                                                                                         FAILING_INTERVAL_IN_MINUTES)
@@ -50,7 +50,9 @@ def lambda_handler(event, context):
 
 
 def extract_details_from_event(event):
-    service = event['detail']['group'].split(':')[1]
+    is_started_by_scheduler = event['detail']['startedBy'].startswith('events-rule')
+    service = None if is_started_by_scheduler else event['detail']['group'].split(':')[1]
+
     execution_stopped_at = event['detail']['executionStoppedAt']
     ttl_datetime = datetime.strptime(execution_stopped_at, "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(
         hours=DYNAMODB_ITEMS_TTL)
