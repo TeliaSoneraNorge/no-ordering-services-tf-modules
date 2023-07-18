@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.18] - 2023-07-018
+ECS task handler lambda bug fix where exception was thrown if failing task was started by scheduler 
+
 ## [1.1.17] - 2023-06-01
 Ability to configure target group stickiness of type app_cookie in ECS fargate service module.
 
@@ -38,7 +41,11 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.14...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.18...master
+
+[1.1.18]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.17...v1.1.18
+
+[1.1.17]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.14...v1.1.17
 
 [1.1.14]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.13...v1.1.14
 
