@@ -1,4 +1,3 @@
-//for testing only
 {
-  "body": "{\"policyNames\": \"pm-at1aws-autoscaling-policy,pm-at1aws-autoscaling-policy-cpu\", \"disableScaleIn\": true}"
+  "body": {"policyNames": "pm-at1aws-autoscaling-policy,pm-at1aws-autoscaling-policy-cpu", "disableScaleIn": true}
 }
