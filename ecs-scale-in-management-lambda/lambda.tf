@@ -67,7 +67,7 @@ resource "aws_lambda_function" "scale_in_lambda" {
   memory_size   = 128
   timeout       = 900
 
-  runtime          = "nodejs12.x"
+  runtime          = "nodejs16.x"
   role             = aws_iam_role.scale_in_lambda.arn
   source_code_hash = data.archive_file.scale-in-lambda-zip.output_base64sha256
   handler          = "app.lambdaHandler"
