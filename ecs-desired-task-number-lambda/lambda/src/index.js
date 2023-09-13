@@ -8,7 +8,7 @@ exports.handler = (event, context, callback) => {
   service: event.serviceName,
   cluster: event.clusterName
  };
- console.log("Input parameters: " + JSON.stringify(params)); 
+ console.log("Input parameters: %j", params); 
 
  ecs.updateService(params, function(err, data) {
    if (err) console.log(err, err.stack); // an error occurred
