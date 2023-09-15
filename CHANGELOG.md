@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.20] - 2023-09-15
+AWS Elasticache refactoring. To keep code simple and have more flexibility, redis and memcahced were split into own <br> 
+modules:
+ - previous code temporary rollbacked
+ - new memcached introduced as own module
+
 ## [1.1.18] - 2023-07-018
 ECS task handler lambda bug fix where exception was thrown if failing task was started by scheduler 
 
@@ -41,7 +47,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.18...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.20...master
+
+[1.1.20]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.19...v1.1.20
 
 [1.1.18]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.17...v1.1.18
 
