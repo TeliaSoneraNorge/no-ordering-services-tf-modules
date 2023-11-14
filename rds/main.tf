@@ -7,7 +7,7 @@ resource "random_password" "generated_db_password" {
   length  = 16
   upper   = true
   lower   = true
-  number  = true
+  numeric  = true
   special = var.password_use_special
 }
 
@@ -67,7 +67,7 @@ resource "aws_db_parameter_group" "custom_parameters" {
 
 module "rds" {
   source  = "telia-oss/rds-instance/aws"
-  version = "4.1.0"
+  version = "5.0.0"
 
   name_prefix                           = local.identifier
   tags                                  = var.tags
