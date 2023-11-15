@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.21] - 2023-11-15
+RDS module upgraded due to aws provider 5 support
+
 ## [1.1.20] - 2023-09-15
 AWS Elasticache refactoring. To keep code simple and have more flexibility, redis and memcahced were split into own <br> 
 modules:
@@ -47,7 +50,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.20...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.21...master
+
+[1.1.21]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.20...v1.1.21
 
 [1.1.20]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.19...v1.1.20
 
