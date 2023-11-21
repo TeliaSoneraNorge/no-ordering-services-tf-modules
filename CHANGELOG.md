@@ -54,7 +54,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.21...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.22...master
+
+[1.1.22]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.21...v1.1.22
 
 [1.1.21]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.20...v1.1.21
 
