@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.22] - 2023-11-21
+RDS module 
+ - new variable added: `copy_tags_to_snapshot`
+
 ## [1.1.21] - 2023-11-15
 RDS module upgraded due to aws provider 5 support
 

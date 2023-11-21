@@ -217,3 +217,9 @@ variable "performance_insights_retention_period" {
   type        = number
   default     = 7
 }
+
+variable "copy_tags_to_snapshot" {
+  description = "On delete, copy all Instance tags to the final snapshot (if final_snapshot_identifier is specified)"
+  type        = bool
+  default     = false
+}

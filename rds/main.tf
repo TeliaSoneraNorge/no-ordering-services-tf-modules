@@ -99,6 +99,7 @@ module "rds" {
   deletion_protection                   = var.deletion_protection
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
+  copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
 
 }
 
