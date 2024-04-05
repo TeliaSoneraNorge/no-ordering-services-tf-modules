@@ -100,7 +100,7 @@ module "rds" {
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
-
+  ca_cert_identifier                    = var.ca_cert_identifier
 }
 
 resource "aws_security_group_rule" "allow_vpc_subnets" {
