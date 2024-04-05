@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.23] - 2024-04-05
+RDS module
+- new variable added: `git checkout ` with default value `rds-ca-rsa2048-g1`
+
 ## [1.1.22] - 2023-11-21
 RDS module 
  - new variable added: `copy_tags_to_snapshot`
@@ -54,7 +58,9 @@ Changes related to redis sub-module.
 
 ## [1.1.9]
 
-[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.22...master
+[unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.23...master
+
+[1.1.23]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.22...v1.1.23
 
 [1.1.22]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.21...v1.1.22
 
