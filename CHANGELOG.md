@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.1.23] - 2024-04-05
 RDS module
-- new variable added: `git checkout ` with default value `rds-ca-rsa2048-g1`
+- new variable added: `ca_cert_identifier` with default value `rds-ca-rsa2048-g1`
 
 ## [1.1.22] - 2023-11-21
 RDS module 
