@@ -70,7 +70,7 @@ resource "aws_lambda_function" "start_stop_lambda" {
   memory_size   = 128
   timeout       = 900
 
-  runtime          = "nodejs14.x"
+  runtime          = "nodejs20.x"
   role             = aws_iam_role.start_stop_lambda_role.arn
   source_code_hash = data.archive_file.start_stop_lambda_zip.output_base64sha256
   handler          = "index.handler"
