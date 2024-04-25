@@ -1,96 +1,58 @@
-const AWS = require("aws-sdk");
-const ssm = new AWS.SSM({
-    apiVersion: '2014-11-06',
-    maxRetries: 20
-});
-
+const { SSMClient, GetParameterCommand, PutParameterCommand, DeleteParameterCommand, DescribeParametersCommand } = require("@aws-sdk/client-ssm");
+const client = new SSMClient();
 
 exports.readParam = async (key) => {
-    
-    return new Promise((resolve, reject) => {
-        
-        let params = {
-          Name: key, /* required */
-          WithDecryption: false
-        };
+  const params = {
+    Name: key, /* required */
+    WithDecryption: false
+  };
 
-       
-       ssm.getParameter(params, (err, data) => {
-          if (err)  reject(err); 
-            else{
-                let obj = {};
-                obj = data;
-                resolve(obj.Parameter.Value);
-            }  
-        });
-    });
-    
+  const command = new GetParameterCommand(params);
+
+  const result = await client.send(command);
+  return result.Parameter.Value;
 };
 
 
-exports.writeParam = async (key, value, tier='Standard', overwrite = false) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-          Name: key, /* required */
-          Type: "String", /* required */
-          Value: value, /* required */
-          Tier: tier,
-          Overwrite: overwrite
-        };
+exports.writeParam = async (key, value, tier = 'Standard', overwrite = false) => {
+  const params = {
+    Name: key, /* required */
+    Type: "String", /* required */
+    Value: value, /* required */
+    Tier: tier,
+    Overwrite: overwrite
+  };
 
-       
-       ssm.putParameter(params, (err, data) => {
-          if (err)  reject(err); 
-            else{
-                resolve(data);
-            }  
-        });
-    });
+  const command = new PutParameterCommand(params);
+  const result = await client.send(command);
+  return result;
 };
 
-exports.paramExists = async (key)  => {
-    
-    return new Promise((resolve, reject) => {
-        
-        let params = {
-            Filters: [
-            {
-              Key: "Name", /* required */
-              Values: [ /* required */
-                key,
-                /* more items */
-              ]
-            },
-            /* more items */
-          ],
-        };
+exports.paramExists = async (key) => {
+  const params = {
+    Filters: [
+      {
+        Key: "Name", /* required */
+        Values: [ /* required */
+          key,
+          /* more items */
+        ]
+      },
+      /* more items */
+    ],
+  };
 
-       
-       ssm.describeParameters(params, (err, data) => {
-          if (err)  reject(err); 
-            else{
-                resolve(data.Parameters.length>0);
-            }  
-        });
-    });
-    
+  const command = new DescribeParametersCommand(params);
+  const result = await client.send(command);
+  return result.Parameters.length > 0;
 };
 
 exports.deleteParam = async (key) => {
-    
-    return new Promise((resolve, reject) => {
-        
-        let params = {
-          Name: key, /* required */
-        };
+  const params = {
+    Name: key, /* required */
+  };
 
-       
-       ssm.deleteParameter(params, (err, data) => {
-          if (err)  reject(err); 
-            else{
-               resolve(data);
-            }  
-        });
-    });
-    
+  const command = new DeleteParameterCommand(params);
+  const result = await client.send(command);
+  return result;
 };

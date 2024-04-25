@@ -1,6 +1,7 @@
-const AWS = require("aws-sdk");
-const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
+const { ECSClient, ListClustersCommand, UpdateServiceCommand, DescribeServicesCommand, ListServicesCommand } = require("@aws-sdk/client-ecs");
 const ssm = require('./ssm.js');
+
+const client = new ECSClient();
 
 exports.stopClusters = async servicesToSkip => {
     let clusterArns = await getClusterNames();
@@ -24,14 +25,8 @@ exports.startClusters = async servicesToSkip => {
 };
 
 const getClusterNames = async () => {
-    return new Promise((resolve, reject) => {
-        let params = {};
-
-        ecs.listClusters(params, (err, data) => {
-            if (err) reject(err); // an error occurred
-            else resolve(data.clusterArns);           // successful response
-        });
-    });
+    const result = await client.send(new ListClustersCommand());
+    return result.clusterArns;
 }
 
 
@@ -95,20 +90,14 @@ const stopServiceTasks = async (clusterName, serviceNames) => {
 };
 
 const updateServiceTasks = async (clusterName, serviceName, desiredCount) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-            desiredCount: desiredCount,
-            service: serviceName,
-            cluster: clusterName,
-        };
-        console.log("Service " + serviceName + ": desired task count set to: " + desiredCount);
-
-
-        ecs.updateService(params, (err, data) => {
-            if (err) reject(err); // an error occurred
-            else resolve(data);           // successful response
-        });
-    });
+    let params = {
+        desiredCount: desiredCount,
+        service: serviceName,
+        cluster: clusterName,
+    };
+    console.log(`Service ${serviceName} desired task count set to: ${desiredCount}`);
+    const result = await client.send(new UpdateServiceCommand(params));
+    return result;
 };
 
 const storeNumberOfTasksToSsm = async (clusterName, serviceNames) => {
@@ -147,45 +136,31 @@ const parseJsonArrayToJson = (jsonArray) => {
 
 
 const getServiceTaskCount = async (clusterName, serviceName) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-            services: [serviceName],
-            cluster: clusterName,
-        };
+    let params = {
+        services: [serviceName],
+        cluster: clusterName,
+    };
 
+    const result = await client.send(new DescribeServicesCommand(params));
+    let taskCountMap = {};;
 
-        ecs.describeServices(params, (err, data) => {
-            if (err) reject(err); // an error occurred
-            else {               // successful response
-                let taskCountMap = {};;
+    let servceObj = {};
+    servceObj = result.services[0];
 
-                let servceObj = {};
-                servceObj = data.services[0];
-
-                taskCountMap[servceObj.serviceName] = servceObj.desiredCount;
-                resolve(taskCountMap);
-            }
-        });
-    });
+    taskCountMap[servceObj.serviceName] = servceObj.desiredCount;
+    return taskCountMap;
 };
 
 
-const getNeoEcsServiceList = (clusterName) => {
+const getNeoEcsServiceList = async (clusterName) => {
+    const params = {
+        cluster: clusterName,
+        maxResults: 100,
+    };
 
-    return new Promise((resolve, reject) => {
-        const params = {
-            cluster: clusterName,
-            maxResults: 100,
-        };
+    const result = await client.send(new ListServicesCommand(params));
 
-        ecs.listServices(params, (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data.serviceArns);
-            }
-        })
-    });
+    return result.serviceArns;
 };
 
 

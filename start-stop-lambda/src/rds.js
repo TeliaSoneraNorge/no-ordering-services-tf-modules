@@ -1,5 +1,5 @@
-const AWS = require("aws-sdk");
-const rds = new AWS.RDS({apiVersion: '2014-10-31'});
+const { RDSClient, DescribeDBInstancesCommand, StartDBInstanceCommand, StopDBInstanceCommand, waitUntilDBInstanceAvailable } = require("@aws-sdk/client-rds");
+const client = new RDSClient();
 
 exports.stopRdsInstances = async rdsInstancesToSkip => {
     let rdsInstanceInfos = await getDBInstanceInfo();
@@ -35,58 +35,41 @@ const notIn = (rdsInstanceInfo, rdsInstancesToSkip) => {
 }
 
 const getDBInstanceInfo = async () => {
-    
-    return new Promise((resolve, reject) => {
-        let params = {};
 
-        rds.describeDBInstances(params, (err, data) => {
-           if (err) reject(err); // an error occurred
-           else{                 // successful response
-               let rdsInstanceInfos = [];
-               for(let dbInstance of data.DBInstances){
-                    if(dbInstance.Engine !== "docdb"){
-                        let obj = {};
-                        obj["DBInstanceIdentifier"] = dbInstance.DBInstanceIdentifier; 
-                        obj["DBInstanceStatus"] = dbInstance.DBInstanceStatus;
-                        rdsInstanceInfos.push(obj);
-                    }
-                }
-                resolve(rdsInstanceInfos); 
-           }    
-        });
-    });
+    const command = new DescribeDBInstancesCommand({});
+    const result = await client.send(command);
+
+    const rdsInstanceInfos = [];
+    for (let dbInstance of result.DBInstances) {
+        if (dbInstance.Engine !== "docdb") {
+            let obj = {};
+            obj["DBInstanceIdentifier"] = dbInstance.DBInstanceIdentifier;
+            obj["DBInstanceStatus"] = dbInstance.DBInstanceStatus;
+            rdsInstanceInfos.push(obj);
+        }
+    }
+    return rdsInstanceInfos;
 };
 
 const stopDbInstance = async (name) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-            DBInstanceIdentifier : name
-        };
-        console.log("Stopping DB instance: " + name); 
-        
-        rds.stopDBInstance(params, (err, data) => {
-           if (err) reject(err); // an error occurred
-           else     resolve(data);           // successful response
-        }); 
-    });
+    let params = {
+        DBInstanceIdentifier: name
+    };
+    console.log(`Stopping DB instance: ${name}`);
+    const result = await client.send(new StopDBInstanceCommand(params));
+    return result;
 };
 
 const startDbInstance = async (name) => {
-    return new Promise((resolve, reject) => {
-        let params = {
-            DBInstanceIdentifier : name
-        };
-        console.log("Starting DB instance: " + name); 
 
-        rds.startDBInstance(params, (err, data) => {
-           if (err) reject(err); // an error occurred
-           else     resolve(data);           // successful response
-        });
-    });
+    let params = {
+        DBInstanceIdentifier: name
+    };
+    console.log(`Starting DB instance: ${name}`);
+    const result = await client.send(new StartDBInstanceCommand(params));
+    return result;
 };
 
 const waitOnDbInstanceAvailable = async (dbIdentifier) => {
-    return rds.waitFor('dBInstanceAvailable', {
-        DBInstanceIdentifier: dbIdentifier
-    }).promise();
+    await waitUntilDBInstanceAvailable({ client, maxWaitTime: 60 }, { DBInstanceIdentifier: dbIdentifier }).promise();
 }
