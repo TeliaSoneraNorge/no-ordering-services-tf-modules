@@ -1,9 +1,11 @@
-const AWS = require("aws-sdk");
-const applicationAutoScaling = new AWS.ApplicationAutoScaling({apiVersion: '2016-02-06'});
+
+const { ApplicationAutoScalingClient, DescribeScalableTargetsCommand, RegisterScalableTargetCommand } = require("@aws-sdk/client-application-auto-scaling");
 const ssm = require('./ssm.js');
 
 const SERVICE_NAMESPACE = 'ecs';
 const PARAMETER_STORE_KEY = "/StopStartService/stopApplicationAutoScaling/state";
+
+const client = new ApplicationAutoScalingClient();
 
 exports.startScalableServices = async servicesToSkip => {
     if (!(await ssm.paramExists(PARAMETER_STORE_KEY))) {
@@ -43,43 +45,29 @@ exports.stopScalableServices = async servicesToSkip => {
 };
 
 const listScalableServices = async serviceNamespace => {
-    return new Promise((resolve, reject) => {
-        const params = {
-            ServiceNamespace: serviceNamespace
-        };
-        applicationAutoScaling.describeScalableTargets(params, (err, data) => {
-            if (err) { // an error occurred
-                console.log(err, err.stack);
-                reject(err);
-            } else { // successful response
-                let services = data.ScalableTargets.map(item => ({
-                    MaxCapacity: item.MaxCapacity,
-                    MinCapacity: item.MinCapacity,
-                    ResourceId: item.ResourceId,
-                    ScalableDimension: item.ScalableDimension
-                }));
-                resolve(services);
-            }
-        });
-    });
+    const params = {
+        ServiceNamespace: serviceNamespace
+    };
+
+    const result = await client.send(new DescribeScalableTargetsCommand(params))
+    let services = result.ScalableTargets.map(item => ({
+        MaxCapacity: item.MaxCapacity,
+        MinCapacity: item.MinCapacity,
+        ResourceId: item.ResourceId,
+        ScalableDimension: item.ScalableDimension
+    }));
+    resolve(services);
 };
 
 const updateScalableService = async (serviceNamespace, resourceId, scalableDimension, minCapacity, maxCapacity) => {
-    return new Promise((resolve, reject) => {
-        const params = {
-            MaxCapacity: maxCapacity,
-            MinCapacity: minCapacity,
-            ResourceId: resourceId,
-            ScalableDimension: scalableDimension,
-            ServiceNamespace: serviceNamespace
-        };
-        applicationAutoScaling.registerScalableTarget(params, (err, data) => {
-            if (err) {  // an error occurred
-                console.log(err, err.stack);
-                reject(err);
-            } else { // successful response
-                resolve(data);
-            }
-        });
-    });
+    const params = {
+        MaxCapacity: maxCapacity,
+        MinCapacity: minCapacity,
+        ResourceId: resourceId,
+        ScalableDimension: scalableDimension,
+        ServiceNamespace: serviceNamespace
+    };
+
+    const result = await client.send(new RegisterScalableTargetCommand(params));
+    return result;
 };
