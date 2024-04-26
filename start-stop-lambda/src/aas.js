@@ -56,7 +56,7 @@ const listScalableServices = async serviceNamespace => {
         ResourceId: item.ResourceId,
         ScalableDimension: item.ScalableDimension
     }));
-    resolve(services);
+    return services;
 };
 
 const updateScalableService = async (serviceNamespace, resourceId, scalableDimension, minCapacity, maxCapacity) => {

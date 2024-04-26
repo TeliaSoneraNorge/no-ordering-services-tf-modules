@@ -76,12 +76,11 @@ const skipActions = async () => {
     try {
 
         let paramExists = await ssm.paramExists(PARAMETER_STORE_KEY_SKIP_ACTIONS);
-        console.log(PARAMETER_STORE_KEY_SKIP_ACTIONS + " exists " + paramExists);
         if (paramExists) {
-            let skipActions =  await ssm.readParam(PARAMETER_STORE_KEY_SKIP_ACTIONS);
-            console.log("skipActions = " + skipActions);
-            if (skipActions==='true') {
-                console.log("Action will be skiped, setting SSM parameter " + PARAMETER_STORE_KEY_SKIP_ACTIONS + "to true so next time the action will not be skipped");
+            let skipActions = await ssm.readParam(PARAMETER_STORE_KEY_SKIP_ACTIONS);
+            console.log(`skipActions = ${skipActions}`);
+            if (skipActions === 'true') {
+                console.log(`Action will be skiped, setting SSM parameter ${PARAMETER_STORE_KEY_SKIP_ACTIONS} to false so next time the action will not be skipped`);
                 await ssm.writeParam(PARAMETER_STORE_KEY_SKIP_ACTIONS, "false", "Standard", true);
                 return true;
             }
