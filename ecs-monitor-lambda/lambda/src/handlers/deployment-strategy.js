@@ -32,6 +32,7 @@ class ClassicStrategy extends DeploymentStrategy {
             {
                 ecsClient,
                 minDelay: this.waiter.wait_delay_sec,
+                maxDelay: this.waiter.wait_delay_sec,
                 maxWaitTime: this.waiter.max_wait_minutes * 60
             },
             params);
@@ -60,7 +61,8 @@ class BlueGreenStrategy extends DeploymentStrategy {
         const waiterResult = await waitUntilDeploymentSuccessful(
             {
                 codeDeployClient,
-                mresultDelay: this.waiter.wait_delay_sec,
+                minDelay: this.waiter.wait_delay_sec,
+                maxDelay: this.waiter.wait_delay_sec,
                 maxWaitTime: this.waiter.max_wait_minutes * 60
             },
             new GetDeploymentCommandInput({ deploymentId: currentDeplId }));
