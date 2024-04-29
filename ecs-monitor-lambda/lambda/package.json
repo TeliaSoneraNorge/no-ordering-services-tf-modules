@@ -3,7 +3,7 @@
     "description": "Lambda used for monitoring deployment status and reporting back to RMTool/Github",
     "version": "0.0.1",
     "private": true,
-    "dependencies": {
+    "devDependencies": {
         "@aws-sdk/client-codedeploy": "^3.564.0",
         "@aws-sdk/client-ecs": "^3.564.0",
         "@aws-sdk/client-ssm": "^3.564.0",
