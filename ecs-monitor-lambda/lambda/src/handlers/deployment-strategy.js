@@ -1,14 +1,14 @@
-const AWS = require('aws-sdk');
-const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
-const codedeploy = new AWS.CodeDeploy({ apiVersion: '2014-10-06' });
+const { ECSClient, DescribeServicesCommand, waitUntilServicesStable } = require("@aws-sdk/client-ecs");
+const { CodeDeployClient, ListDeploymentsCommand, waitUntilDeploymentSuccessful, GetDeploymentCommandInput } = require("@aws-sdk/client-codedeploy");
+
+const ecsClient = new ECSClient();
+const codeDeployClient = new CodeDeployClient();
 
 class DeploymentStrategy {
     constructor(service, cluster, waiter) {
         this.service = service;
         this.cluster = cluster;
         this.waiter = waiter;
-
-        this.maxAttempts = (waiter.max_wait_minutes * 60) / waiter.wait_delay_sec;
     }
 
     identify() {
@@ -22,15 +22,20 @@ class ClassicStrategy extends DeploymentStrategy {
         super(service, cluster, waiter);
     }
 
-    waitForServiceStability() {
-        return ecs.waitFor('servicesStable', {
+    async waitForServiceStability() {
+        const params = new DescribeServicesCommand({
             services: [this.service],
-            cluster: this.cluster,
-            $waiter: {
-                delay: this.waiter.wait_delay_sec,
-                maxAttempts: this.maxAttempts
-            }
-        }).promise();
+            cluster: this.cluster
+        });
+
+        const waiterResult = await waitUntilServicesStable(
+            {
+                ecsClient,
+                minDelay: this.waiter.wait_delay_sec,
+                maxWaitTime: this.waiter.max_wait_minutes * 60
+            },
+            params);
+        return waiterResult;
     }
 
     identify() {
@@ -52,17 +57,18 @@ class BlueGreenStrategy extends DeploymentStrategy {
         //take first in array meaning last one
         const currentDeplId = result.deployments[0];
 
-        return codedeploy.waitFor('deploymentSuccessful', {
-            deploymentId: currentDeplId,
-            $waiter: {
-                delay: this.waiter.wait_delay_sec,
-                maxAttempts: this.maxAttempts
-            }
-        }).promise();
+        const waiterResult = await waitUntilDeploymentSuccessful(
+            {
+                codeDeployClient,
+                mresultDelay: this.waiter.wait_delay_sec,
+                maxWaitTime: this.waiter.max_wait_minutes * 60
+            },
+            new GetDeploymentCommandInput({ deploymentId: currentDeplId }));
+        return waiterResult;
     }
 
-    _getDeploymentId() {
-        return codedeploy.listDeployments({
+    async _getDeploymentId() {
+        const input = new ListDeploymentsCommand({
             applicationName: this.service,
             createTimeRange: {
                 end: null,
@@ -70,7 +76,9 @@ class BlueGreenStrategy extends DeploymentStrategy {
             },
             deploymentGroupName: this.service,
             includeOnlyStatuses: ["InProgress"]
-        }).promise();
+        });
+        const response = await codeDeployClient.send(input);
+        return response;
     }
 
     identify() {

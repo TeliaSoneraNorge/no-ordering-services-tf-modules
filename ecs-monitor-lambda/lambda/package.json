@@ -1,11 +1,13 @@
 {
-    "name": "replaced-by-user-input",
-    "description": "replaced-by-user-input",
+    "name": "ecs-monitor",
+    "description": "Lambda used for monitoring deployment status and reporting back to RMTool/Github",
     "version": "0.0.1",
     "private": true,
-    "dependencies": {},
-    "devDependencies": {
-        "jest": "^24.7.1"
+    "dependencies": {
+        "@aws-sdk/client-codedeploy": "^3.564.0",
+        "@aws-sdk/client-ecs": "^3.564.0",
+        "@aws-sdk/client-ssm": "^3.564.0",
+        "jest": "^29.7.0"
     },
     "scripts": {
         "test": "jest"
