@@ -1,9 +1,10 @@
-const AWS = require("aws-sdk");
-const ssm = new AWS.SSM({ apiVersion: '2014-11-06' })
+const { SSMClient, GetParameterCommand } = require("@aws-sdk/client-ssm");
 const https = require('https');
 
 const CLIENT_SECRET_BASE64_PARAM_PATH = process.env.ENV_CLIENT_SECRET_BASE64_PARAM_PATH
 const RMTOOL_HOST = process.env.ENV_RMTOOL_HOST
+
+const ssmClient = new SSMClient();
 
 const buildRequestPayload = (phase, status, component, env_action_update) => {
     return {
@@ -105,11 +106,13 @@ const buildRequestPromiseWithBasicAuth = (path, basicAuth, method, payload) => {
     return buildRequestPromise(options, payload);
 }
 
-const getBase64EncodedAuthFromParamStore = () => {
-    return ssm.getParameter({
+const getBase64EncodedAuthFromParamStore = async () => {
+    const input = new GetParameterCommand({
         Name: CLIENT_SECRET_BASE64_PARAM_PATH,
         WithDecryption: true
-    }).promise();
+    });
+    const response = await ssmClient.send(input);
+    return response;
 }
 
 class RMToolClient {

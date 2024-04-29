@@ -13,13 +13,13 @@ exports.monitorHandler = async (event, context, callback) => {
     try {
         validateInputPayload(event);
 
-        let deploymentStrategy = DeploymentStrategyDelegator[event.deployment_type](event.service, event.cluster, event.waiter);
+        const deploymentStrategy = DeploymentStrategyDelegator[event.deployment_type](event.service, event.cluster, event.waiter);
         console.info(`Waiting for deploy of deployment type: ${deploymentStrategy.identify()}`);
         console.info(event)
 
         await RMToolClient.actionUpdate(STARTED, SUCCESS, event.service, event.env_action_update);
 
-        let result = await deploymentStrategy.waitForServiceStability();
+        const result = await deploymentStrategy.waitForServiceStability();
         console.info(`Service(${event.service}) is HEALTHY!`);
         console.info(result);
 
