@@ -71,5 +71,5 @@ const startDbInstance = async (name) => {
 };
 
 const waitOnDbInstanceAvailable = async (dbIdentifier) => {
-    await waitUntilDBInstanceAvailable({ client, maxWaitTime: 60 }, { DBInstanceIdentifier: dbIdentifier }).promise();
+    await waitUntilDBInstanceAvailable({ client, maxWaitTime: 60 }, { DBInstanceIdentifier: dbIdentifier });
 }
