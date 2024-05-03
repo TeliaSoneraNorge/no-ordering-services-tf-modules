@@ -21,7 +21,8 @@ class ClassicStrategy extends DeploymentStrategy {
     constructor(service, cluster, waiter) {
         super(service, cluster, waiter);
     }
-
+    // This is a workaround for waitUntilServicesStable that is not working properly
+    // Should be replaced when the SDK fixes the issues and documents how to use waitUntilServicesStable.
     async waitForServiceStability() {
         const params = new DescribeServicesCommand({
             services: [this.service],
