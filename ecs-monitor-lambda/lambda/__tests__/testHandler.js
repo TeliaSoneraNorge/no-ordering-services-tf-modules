@@ -1,5 +1,5 @@
 process.env.ENV_CLIENT_SECRET_BASE64_PARAM_PATH = '/rmtool/basicauth';
-process.env.ENV_RMTOOL_HOST = 'neo-ife.neo-prod.telia.io';
+process.env.ENV_RMTOOL_HOST = 'localhost:8080';
 
 const handler = require('../src/handlers/ecs-deploy-monitor.js');
 const inputClassic = require("../events/event.json");
