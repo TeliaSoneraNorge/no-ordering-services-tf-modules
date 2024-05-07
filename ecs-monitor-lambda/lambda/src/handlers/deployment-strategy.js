@@ -21,22 +21,36 @@ class ClassicStrategy extends DeploymentStrategy {
     constructor(service, cluster, waiter) {
         super(service, cluster, waiter);
     }
-
+    // This is a workaround for waitUntilServicesStable that is not working properly
+    // Should be replaced when the SDK fixes the issues and documents how to use waitUntilServicesStable.
     async waitForServiceStability() {
         const params = new DescribeServicesCommand({
             services: [this.service],
             cluster: this.cluster
         });
 
-        const waiterResult = await waitUntilServicesStable(
-            {
-                ecsClient,
-                minDelay: this.waiter.wait_delay_sec,
-                maxDelay: this.waiter.wait_delay_sec,
-                maxWaitTime: this.waiter.max_wait_minutes * 60
-            },
-            params);
-        return waiterResult;
+        const delay = (seconds) => new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+        const maxAttempts = this.waiter.max_wait_minutes * 60 / this.waiter.wait_delay_sec;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            try {
+                const response = await ecsClient.send(params);
+                const service = response.services[0];
+                const deployments = service.deployments || [];
+                const runningCount = service.runningCount || 0;
+                const desiredCount = service.desiredCount || 0;
+
+                if (service && service.status === "ACTIVE" && deployments.length === 1 && runningCount === desiredCount) {
+                    return `Service ${this.service} is stable.`;
+                }
+
+                console.log(`Waiting for service ${this.service} to stabilize...`);
+            } catch (error) {
+                console.error("Error checking service status:", error);
+            }
+            await delay(this.waiter.wait_delay_sec);
+        }
+        throw new Error(`Timeout before service ${this.service} stablized`);
     }
 
     identify() {
