@@ -9,6 +9,12 @@ variable "start_schedule_expression" {
   type        = string
 }
 
+variable "fail_safe_start_schedule_expression" {
+  description = "Optional fail-safe start trigger in case initially scheduled start attempt fails or times out."
+  type        = string
+  default     = ""
+}
+
 variable "stop_schedule_expression" {
   description = "Stop system schedule expression, can be in crontab"
   type        = string
