@@ -92,6 +92,12 @@ resource "aws_cloudwatch_event_rule" "start_system" {
   schedule_expression = "cron(${var.start_schedule_expression})"
 }
 
+resource "aws_cloudwatch_event_rule" "fail_safe_start_system" {
+  count               = var.fail_safe_start_schedule_expression == "" ? 0 : 1
+  name                = "fail-safe-start-system-lambda-rule"
+  schedule_expression = "cron(${var.fail_safe_start_schedule_expression})"
+}
+
 resource "aws_cloudwatch_event_target" "start_lambda" {
   target_id = aws_lambda_function.start_stop_lambda.function_name
   rule      = aws_cloudwatch_event_rule.start_system.name
