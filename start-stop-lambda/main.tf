@@ -107,7 +107,7 @@ resource "aws_cloudwatch_event_rule" "fail_safe_start_system" {
 
 resource "aws_cloudwatch_event_target" "fail_safe_start_lambda" {
   target_id = aws_lambda_function.start_stop_lambda.function_name
-  rule      = aws_cloudwatch_event_rule.fail_safe_start_system.name
+  rule      = aws_cloudwatch_event_rule.fail_safe_start_system[0].name
   arn       = aws_lambda_function.start_stop_lambda.arn
   input     = "{\"action\":\"start\"}"
 }
