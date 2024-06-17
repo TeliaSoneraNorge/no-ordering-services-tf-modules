@@ -106,10 +106,20 @@ resource "aws_cloudwatch_event_rule" "fail_safe_start_system" {
 }
 
 resource "aws_cloudwatch_event_target" "fail_safe_start_lambda" {
+  count     = var.fail_safe_start_schedule_expression == "" ? 0 : 1
   target_id = aws_lambda_function.start_stop_lambda.function_name
   rule      = aws_cloudwatch_event_rule.fail_safe_start_system[0].name
   arn       = aws_lambda_function.start_stop_lambda.arn
   input     = "{\"action\":\"start\"}"
+}
+
+resource "aws_lambda_permission" "cloudwatch_fail_start" {
+  count         = var.fail_safe_start_schedule_expression == "" ? 0 : 1
+  statement_id  = "AllowExecutionFrom-${aws_cloudwatch_event_rule.fail_safe_start_system[0].name}"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.start_stop_lambda.arn
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.fail_safe_start_system[0].arn
 }
 
 resource "aws_lambda_permission" "cloudwatch_stop" {
