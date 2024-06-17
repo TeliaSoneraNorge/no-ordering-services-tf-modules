@@ -1,19 +1,22 @@
-const AWS = require("aws-sdk");
-const ecs = new AWS.ECS({ apiVersion: '2014-11-13' });
+const { ECSClient,UpdateServiceCommand } = require("@aws-sdk/client-ecs");
+const client = new ECSClient();
 
-exports.handler = (event, context, callback) => {
+exports.handler = async (event, context, callback) => {
 
- var params = {
+ const params = {
   desiredCount: event.desiredCount, 
   service: event.serviceName,
   cluster: event.clusterName
  };
- console.log("Input parameters: %j", params); 
-
- ecs.updateService(params, function(err, data) {
-   if (err) console.log(err, err.stack); // an error occurred
-   else     console.log(data);           // successful response
-   
- });
-
+    console.log("Input parameters: %j", params);
+    try {
+        const result = await client.send(new UpdateServiceCommand(params));
+        console.log(`Service ${event.serviceName} desired task count set to: ${event.desiredCount}`);
+        console.log(result);
+    }
+    catch (err) {
+        console.error(err);
+        throw err;
+    }
 };
+

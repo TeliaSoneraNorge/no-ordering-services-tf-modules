@@ -1,0 +1,24 @@
+{
+  "name": "ecs-desired-task-number-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest --config=jest.unit-tests.config.js --silent=false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:TeliaSoneraNorge/no-ordering-services-tf-modules.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.5.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-application-auto-scaling": "^3.556.0",
+    "@aws-sdk/client-ecs": "^3.556.0",
+    "@aws-sdk/client-rds": "^3.561.0",
+    "@aws-sdk/client-ssm": "^3.556.0"
+  }
+}
