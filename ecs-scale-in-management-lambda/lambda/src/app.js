@@ -1,11 +1,13 @@
-const AWS = require("aws-sdk");
-const S3 = new AWS.S3();
-const AS = new AWS.ApplicationAutoScaling({apiVersion: '2016-02-06'});
+const {
+    ApplicationAutoScalingClient,
+    DescribeScalingPoliciesCommand,
+    PutScalingPolicyCommand
+} = require("@aws-sdk/client-application-auto-scaling");
 
 let response;
-
+const client = new ApplicationAutoScalingClient();
 /**
- *  Lambda is dedicated for enabling, disabling disableScaleIn parameter in TargetTrackingScaling 
+ *  Lambda is dedicated for enabling, disabling disableScaleIn parameter in TargetTrackingScaling
  *
  * @param {*} event should contain body.policyNames separated by comma, body.disableScaleIn (true, false)
  * @param {*} context
@@ -18,19 +20,18 @@ exports.lambdaHandler = async (event, context) => {
         let policyNames;
         let disableScaleIn;
         if (event.body) {
-            if (event.body.hasOwnProperty('policyNames')){
+            if (event.body.hasOwnProperty('policyNames')) {
                 policyNames = event.body.policyNames;
             }
-            if (event.body.hasOwnProperty('disableScaleIn')){
+            if (event.body.hasOwnProperty('disableScaleIn')) {
                 disableScaleIn = event.body.disableScaleIn;
             }
-        }
-        else {
+        } else {
             policyNames = event.policyNames;
             disableScaleIn = event.disableScaleIn;
         }
         //disableScaleIn is boolean
-        if ( !policyNames || typeof disableScaleIn === 'undefined') {
+        if (!policyNames || typeof disableScaleIn === 'undefined') {
             throw "Parameters missing, policyName or/and disableScaleIn";
         }
 
@@ -39,7 +40,7 @@ exports.lambdaHandler = async (event, context) => {
         for (let i = 0; i < policyNamesTab.length; i++) {
             //Get the current policy data
             let currentPolicyData = await getScalingPolicyDetails(policyNamesTab[i]);
-            if (currentPolicyData.ScalingPolicies.length == 0 ) {
+            if (currentPolicyData.ScalingPolicies.length == 0) {
                 throw "Could not find scaling policy " + policyNamesTab[i];
             }
             //Set disableScaleIn parameter
@@ -47,7 +48,7 @@ exports.lambdaHandler = async (event, context) => {
         }
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return getResponseObject(500, err);
     }
 
@@ -55,38 +56,31 @@ exports.lambdaHandler = async (event, context) => {
 };
 
 
-const getScalingPolicyDetails = (policyName) => {
-    return new Promise((resolve, reject) => {
-        const params = {
-            ServiceNamespace: "ecs",
-            PolicyNames: [policyName]
+const getScalingPolicyDetails = async (policyName) => {
 
-        };
-        AS.describeScalingPolicies(params, function(err, data) {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(data);
-            }
-        });
-    });
+    const params = {
+        ServiceNamespace: "ecs",
+        PolicyNames: [policyName]
+    };
+    try {
+        return await client.send(new DescribeScalingPoliciesCommand(params));
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 };
 
-const modifyTargetScalingInForPolicy = (currentPolicyData, disableScaleIn) => {
-    return new Promise((resolve, reject) => {
-        let params = prepareInputForPutScalingPolicy(currentPolicyData, disableScaleIn);
+const modifyTargetScalingInForPolicy = async (currentPolicyData, disableScaleIn) => {
+    let params = prepareInputForPutScalingPolicy(currentPolicyData, disableScaleIn);
 
-        AS.putScalingPolicy(params, function(err, data) {
-            if (err) {
-                reject(err);
-            }
-            else {
-                console.log("Modified policy " + currentPolicyData.PolicyName + " disable scale in = " + disableScaleIn);
-                resolve(data);
-            }
-        });
-    });    
+    try {
+        const result = await client.send(new PutScalingPolicyCommand(params));
+        console.log("Policy " + currentPolicyData.PolicyName + " updated, DisableScaleIn to " + disableScaleIn);
+    } catch (err) {
+        console.error("Problem to update policy " + currentPolicyData.PolicyName + " DisableScaleIn to " + disableScaleIn);
+        console.error(err);
+        throw err;
+    }
 }
 
 
@@ -99,7 +93,7 @@ const prepareInputForPutScalingPolicy = (policyData, disableScaleIn) => {
     return policyData;
 }
 
-const getResponseObject = (code, msg) =>  {
+const getResponseObject = (code, msg) => {
     return response = {
         'statusCode': code,
         'body': JSON.stringify({
