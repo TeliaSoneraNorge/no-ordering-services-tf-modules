@@ -114,7 +114,7 @@ resource "aws_lb_target_group" "green" {
 
   stickiness {
     enabled     = var.stickiness_app_cookie_name != "" ? true : false
-    type        = var.stickiness_app_cookie_name != "" ? "app_cookie" : "lb_cookie" 
+    type        = var.stickiness_app_cookie_name != "" ? "app_cookie" : "lb_cookie"
     cookie_name = var.stickiness_app_cookie_name
   }
 

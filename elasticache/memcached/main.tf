@@ -23,7 +23,7 @@ resource "aws_security_group" "memcached" {
     protocol        = "TCP"
     security_groups = var.cluster_security_group_ids
   }
-  tags              = var.tags
+  tags = var.tags
 }
 
 resource "aws_elasticache_subnet_group" "memcached" {

@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_dashboard" "main" {
-  count = var.create_dashboard ? 1 : 0
+  count          = var.create_dashboard ? 1 : 0
   dashboard_name = "${local.identifier}-db-dashboard"
 
   dashboard_body = <<EOF

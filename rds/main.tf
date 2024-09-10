@@ -7,7 +7,7 @@ resource "random_password" "generated_db_password" {
   length  = 16
   upper   = true
   lower   = true
-  numeric  = true
+  numeric = true
   special = var.password_use_special
 }
 

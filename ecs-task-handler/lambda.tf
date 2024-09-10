@@ -18,25 +18,25 @@ data "archive_file" "ecs_task_failing_handler_lambda_zip" {
 }
 
 resource "aws_lambda_function" "ecs_task_failing_handler_lambda" {
-  filename      = data.archive_file.ecs_task_failing_handler_lambda_zip.output_path
-  function_name = local.ecs_task_failing_handler_lambda_name
-  role          = aws_iam_role.ecs_task_failing_handler_lambda.arn
-  handler       = "main.lambda_handler"
-  runtime       = "python3.9"
-  architectures    = ["arm64"]
+  filename                       = data.archive_file.ecs_task_failing_handler_lambda_zip.output_path
+  function_name                  = local.ecs_task_failing_handler_lambda_name
+  role                           = aws_iam_role.ecs_task_failing_handler_lambda.arn
+  handler                        = "main.lambda_handler"
+  runtime                        = "python3.9"
+  architectures                  = ["arm64"]
   reserved_concurrent_executions = var.reserved_concurrent_executions
-  source_code_hash = data.archive_file.ecs_task_failing_handler_lambda_zip.output_base64sha256
+  source_code_hash               = data.archive_file.ecs_task_failing_handler_lambda_zip.output_base64sha256
 
 
   environment {
     variables = {
-      DYNAMO_DB_TABLE = aws_dynamodb_table.ecs_task_failing.name
+      DYNAMO_DB_TABLE             = aws_dynamodb_table.ecs_task_failing.name
       FAILING_INTERVAL_IN_MINUTES = var.failing_interval_in_minutes,
-      MAX_FAILING_COUNT = var.max_failing_count
-      DYNAMODB_ITEMS_TTL = var.dynamodb_items_ttl_in_hours
-      NOTIFY_ON_FAILING = var.notify_on_failing
-      SHUTDOWN_ON_FAILING = var.shutdown_on_failing
-      SNS_ARN = var.sns_arn
+      MAX_FAILING_COUNT           = var.max_failing_count
+      DYNAMODB_ITEMS_TTL          = var.dynamodb_items_ttl_in_hours
+      NOTIFY_ON_FAILING           = var.notify_on_failing
+      SHUTDOWN_ON_FAILING         = var.shutdown_on_failing
+      SNS_ARN                     = var.sns_arn
     }
   }
 
@@ -83,8 +83,8 @@ data "aws_iam_policy_document" "ecs_task_failing_handler_lambda" {
   }
 
   statement {
-    effect = "Allow"
-    actions = ["dynamodb:*"]
+    effect    = "Allow"
+    actions   = ["dynamodb:*"]
     resources = [aws_dynamodb_table.ecs_task_failing.arn]
   }
 

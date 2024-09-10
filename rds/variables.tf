@@ -220,8 +220,8 @@ variable "performance_insights_retention_period" {
 
 variable "create_dashboard" {
   description = "True/False if rds dashboard shall be created"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "copy_tags_to_snapshot" {

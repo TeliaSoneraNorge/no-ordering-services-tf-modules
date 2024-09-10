@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "incoming_log_events_anomaly" {
     metric {
       metric_name = "IncomingLogEvents"
       namespace   = "AWS/Logs"
-      period      =  var.metric_query_period
+      period      = var.metric_query_period
       stat        = "Average"
 
       dimensions = {
