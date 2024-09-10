@@ -6,9 +6,9 @@ resource "aws_cloudwatch_event_rule" "ecs_task_failing" {
   event_pattern = jsonencode({
     source = ["aws.ecs"],
     detail = {
-      clusterArn = [var.cluster_arn],
+      clusterArn    = [var.cluster_arn],
       desiredStatus = ["STOPPED"],
-      lastStatus= ["STOPPED"]
+      lastStatus    = ["STOPPED"]
     }
   })
 }

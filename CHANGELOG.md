@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - yyyy-mm-dd
 
+## [1.1.30] - 2024-09-10
+RDS module
+- dashboard no data fix 
+
 ## [1.1.29] - 2024-06-18
 Node 20 for Lambda functions
 
@@ -62,6 +66,8 @@ Changes related to redis sub-module.
 ## [1.1.9]
 
 [unreleased]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.23...master
+[1.1.30]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.29...v1.1.30
+
 [1.1.29]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.28...v1.1.29
 
 [1.1.23]: https://github.com/TeliaSoneraNorge/no-ordering-services-tf-modules/compare/v1.1.22...v1.1.23

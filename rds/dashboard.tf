@@ -1,5 +1,6 @@
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "${local.identifier}-dashboard"
+  count          = var.create_dashboard ? 1 : 0
+  dashboard_name = "${local.identifier}-db-dashboard"
 
   dashboard_body = <<EOF
   {
@@ -15,7 +16,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", "${module.rds.id}" ]
+                      [ "AWS/RDS", "FreeStorageSpace", "DBInstanceIdentifier", "${local.identifier}-db" ]
                   ]
               }
           },
@@ -30,7 +31,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "WriteLatency", "DBInstanceIdentifier", "${module.rds.id}" ],
+                      [ "AWS/RDS", "WriteLatency", "DBInstanceIdentifier", "${local.identifier}-db" ],
                       [ ".", "ReadLatency", ".", "." ]
                   ]
               }
@@ -46,7 +47,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "WriteThroughput", "DBInstanceIdentifier", "${module.rds.id}" ],
+                      [ "AWS/RDS", "WriteThroughput", "DBInstanceIdentifier", "${local.identifier}-db" ],
                       [ ".", "ReadThroughput", ".", "." ]
                   ]
               }
@@ -62,7 +63,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "${module.rds.id}" ]
+                      [ "AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "${local.identifier}-db" ]
                   ]
               }
           },
@@ -77,7 +78,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${module.rds.id}" ]
+                      [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${local.identifier}-db" ]
                   ]
               }
           },
@@ -92,7 +93,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "ReadIOPS", "DBInstanceIdentifier", "${module.rds.id}" ],
+                      [ "AWS/RDS", "ReadIOPS", "DBInstanceIdentifier", "${local.identifier}-db" ],
                       [ ".", "WriteIOPS", ".", "." ]
                   ]
               }
@@ -108,7 +109,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "DiskQueueDepth", "DBInstanceIdentifier", "${module.rds.id}" ]
+                      [ "AWS/RDS", "DiskQueueDepth", "DBInstanceIdentifier", "${local.identifier}-db" ]
                   ]
               }
           },
@@ -123,7 +124,7 @@ resource "aws_cloudwatch_dashboard" "main" {
                   "stacked": false,
                   "region": "eu-west-1",
                   "metrics": [
-                      [ "AWS/RDS", "NetworkReceiveThroughput", "DBInstanceIdentifier", "${module.rds.id}" ],
+                      [ "AWS/RDS", "NetworkReceiveThroughput", "DBInstanceIdentifier", "${local.identifier}-db" ],
                       [ ".", "NetworkTransmitThroughput", ".", "." ]
                   ]
               }
