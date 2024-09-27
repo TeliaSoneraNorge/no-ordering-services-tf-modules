@@ -2,11 +2,13 @@ const ecs = require('./ecs.js');
 const rds = require('./rds.js');
 const ssm = require('./ssm.js');
 const aas = require('./aas.js');
+const ec2 = require('./ec2.js');
 
 const PARAMETER_STORE_KEY = "/StopStartService/SystemIsStopped";
 const PARAMETER_STORE_KEY_SKIP_ACTIONS = "/StopStartService/SkipActions";
 const PARAMETER_STORE_KEY_SKIP_SERVICES = "/StopStartService/SkipECSServices";
 const PARAMETER_STORE_KEY_SKIP_RDS = "/StopStartService/SkipRDSInstances";
+const PARAMETER_STORE_KEY_SKIP_EC2 = "/StopStartService/SkipEC2Instances";
 
 exports.handler = async (event) => {
     let error = null;
@@ -33,6 +35,7 @@ exports.handler = async (event) => {
 
     let ecsServicesToSkip = await fetchServicesToSkip(PARAMETER_STORE_KEY_SKIP_SERVICES);
     let rdsInstancesToSkip = await fetchServicesToSkip(PARAMETER_STORE_KEY_SKIP_RDS);
+    let ec2InstancesToSkip = await fetchServicesToSkip(PARAMETER_STORE_KEY_SKIP_EC2)
 
     try {
         switch (action) {
@@ -40,7 +43,7 @@ exports.handler = async (event) => {
                 await startSystem(response, ecsServicesToSkip, rdsInstancesToSkip);
                 break;
             case "stop":
-                await stopSystem(ecsServicesToSkip, rdsInstancesToSkip);
+                await stopSystem(ecsServicesToSkip, rdsInstancesToSkip, ec2InstancesToSkip);
                 break;
             case "status":
                 await getSystemStatus(response);
@@ -98,6 +101,7 @@ const startSystem = async (response, ecsServicesToSkip, rdsInstancesToSkip) => {
         await rds.startRdsInstances(rdsInstancesToSkip);
         await ecs.startClusters(ecsServicesToSkip);
         await aas.startScalableServices(ecsServicesToSkip);
+        await ec2.startEC2Instances();
 
         await ssm.deleteParam(PARAMETER_STORE_KEY);
         console.log("System resources successfuly started.");
@@ -107,12 +111,13 @@ const startSystem = async (response, ecsServicesToSkip, rdsInstancesToSkip) => {
     }
 };
 
-const stopSystem = async (ecsServicesToSkip, rdsInstancesToSkip) => {
+const stopSystem = async (ecsServicesToSkip, rdsInstancesToSkip, ec2InstancesToSkip) => {
 
     console.log("Stopping system resources.");
     await ecs.stopClusters(ecsServicesToSkip);
     await aas.stopScalableServices(ecsServicesToSkip);
     await rds.stopRdsInstances(rdsInstancesToSkip);
+    await ec2.stopEC2Instances(ec2InstancesToSkip);
 
     if (!(await isSystemStopped())) {
         await ssm.writeParam(PARAMETER_STORE_KEY, "true");
