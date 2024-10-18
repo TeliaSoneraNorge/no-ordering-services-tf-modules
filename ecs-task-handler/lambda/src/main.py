@@ -1,3 +1,4 @@
+import json
 import os
 import logging
 import boto3
@@ -18,6 +19,13 @@ DYNAMODB_ITEMS_TTL = int(os.getenv('DYNAMODB_ITEMS_TTL'))
 SNS_ARN = os.getenv("SNS_ARN")
 NOTIFY_ON_FAILING = os.getenv("NOTIFY_ON_FAILING")
 SHUTDOWN_ON_FAILING = os.getenv("SHUTDOWN_ON_FAILING")
+SNS_JSON_MESSAGE_TEMPLATE = {
+                                "version": "1.0",
+                                "source": "custom",
+                                "content": {
+                                    "description": "",
+                                }
+                            }
 
 ecs_client = boto3.client("ecs")
 sns_client = boto3.client('sns')
@@ -37,7 +45,10 @@ def lambda_handler(event, context):
 
             if evaluate_service_shutdown_prerequisite(events, service, execution_stopped_at):
                 if "enabled" == NOTIFY_ON_FAILING:
-                    sns_notify("ECS Task Failing Notification", f"Service: {service} is constantly failing to start.")
+                    subject = "ECS Task Failing Notification"
+                    description = f":warning: Service: {service} is constantly failing to start."
+                    SNS_JSON_MESSAGE_TEMPLATE["content"]["description"] = description
+                    sns_notify(subject, json.dumps(SNS_JSON_MESSAGE_TEMPLATE))
                 if "enabled" == SHUTDOWN_ON_FAILING:
                     shutdown_service(service, cluster_arn)
 
