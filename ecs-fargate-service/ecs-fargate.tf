@@ -279,6 +279,11 @@ resource "aws_lb_listener_rule" "rule" {
     }
   }
 
+
+  tags = {
+    Name = var.application
+  }
+
   # Section is ignored because of the changes which come from canary/deployment (switching blue to green and vice versa)
   lifecycle {
     ignore_changes = [action, condition]
