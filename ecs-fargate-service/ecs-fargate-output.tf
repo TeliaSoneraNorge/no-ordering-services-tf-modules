@@ -10,3 +10,7 @@ output "ecs_service" {
 output "ecs_task_definition" {
   value = aws_ecs_task_definition.task
 }
+
+output "ecs_task_role_arn" {
+  value = aws_iam_role.task.arn
+}
