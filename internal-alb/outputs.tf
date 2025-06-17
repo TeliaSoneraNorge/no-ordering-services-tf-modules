@@ -5,7 +5,7 @@ output "this_security_group_id" {
 
 output "this_alb_arn" {
   description = "Suffix of ARN of the ALB. Useful for passing to cloudwatch Metric dimension."
-  value       = aws_lb.arn
+  value       = aws_lb.alb.arn
 }
 
 output "this_alb_https_listener_arn" {
@@ -15,7 +15,7 @@ output "this_alb_https_listener_arn" {
 
 output "this_alb_arn_suffix" {
   description = "Suffix of ARN of the ALB. Useful for passing to cloudwatch Metric dimension."
-  value       = aws_lb.arn_suffix
+  value       = aws_lb.alb.arn_suffix
 }
 
 output "full_url" {
