@@ -56,11 +56,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs-expiration" {
   }
 }
 
-resource "aws_s3_bucket_acl" "logs-acl" {
+resource "aws_s3_bucket_policy" "logs-policy" {
   for_each = aws_s3_bucket.logs
 
   bucket = each.value.id
-  acl    = "private"
+  policy = data.aws_iam_policy_document.logs.json
 }
 
 resource "aws_s3_bucket_public_access_block" "logs" {
