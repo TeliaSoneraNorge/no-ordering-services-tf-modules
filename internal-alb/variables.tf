@@ -36,7 +36,7 @@ variable "acm_certificate_arn" {
 
 variable "https_source_cidr_blocks" {
   description = "CIDR block list of allowed sources for HTTPS traffic to the ALB"
-  type        = list(string)
+  type        = set(string)
 }
 
 variable "idle_timeout" {
