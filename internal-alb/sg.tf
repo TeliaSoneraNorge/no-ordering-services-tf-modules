@@ -15,7 +15,6 @@ resource "aws_vpc_security_group_ingress_rule" "alb_https" {
   description = "Allow HTTPS from given CIDR block. See terrafom variables for details."
 }
 
-
 resource "aws_vpc_security_group_ingress_rule" "alb_icmp" {
   security_group_id = aws_security_group.alb.id
 
