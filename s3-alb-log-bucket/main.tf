@@ -48,6 +48,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs-expiration" {
   rule {
     id     = "logs-expiration"
     status = "Enabled"
+    filter {}
 
     expiration {
       days = var.lifecycle_expire_after
@@ -60,13 +61,6 @@ resource "aws_s3_bucket_acl" "logs-acl" {
 
   bucket = each.value.id
   acl    = "private"
-}
-
-resource "aws_s3_bucket_policy" "logs-policy" {
-  for_each = aws_s3_bucket.logs
-
-  bucket = each.value.id
-  policy = data.aws_iam_policy_document.logs.json
 }
 
 resource "aws_s3_bucket_public_access_block" "logs" {
