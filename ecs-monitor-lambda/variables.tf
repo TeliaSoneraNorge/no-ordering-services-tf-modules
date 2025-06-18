@@ -1,6 +1,13 @@
+variable "identifier" {
+  description = "Identifier for the environment, used in resource names"
+  type        = string
+  default     = "ecs-monitor"
+}
+
 variable "common_tags" {
   description = "Common tags to all resources in environment"
   type        = map(string)
+  default     = {}
 }
 
 variable "env_region" {

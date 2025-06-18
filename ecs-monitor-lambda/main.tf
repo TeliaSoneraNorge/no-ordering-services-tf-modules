@@ -1,5 +1,5 @@
 locals {
-  ecs_monitor_lambda_name = "ecs-monitor"
+  ecs_monitor_lambda_name = var.identifier
 }
 
 data "archive_file" "ecs-monitor-lambda_zip" {
