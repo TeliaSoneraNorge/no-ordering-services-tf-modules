@@ -44,7 +44,7 @@ resource "aws_codedeploy_deployment_group" "deployment_group_canary" {
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
-        listener_arns = [var.alb_https_listener_arns[0]]
+        listener_arns = [var.alb_https_listener_arn]
       }
 
       target_group {
