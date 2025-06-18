@@ -252,7 +252,7 @@ resource "aws_route53_record" "a" {
 }
 
 resource "aws_lb_listener_rule" "rule" {
-  listener_arn = var.alb_https_listener_arns[0]
+  listener_arn = var.alb_https_listener_arn
 
   action {
     type             = "forward"

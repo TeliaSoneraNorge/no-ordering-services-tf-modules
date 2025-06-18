@@ -228,9 +228,9 @@ variable "deployment_controller_type" {
 }
 
 
-variable "alb_https_listener_arns" {
-  description = "HTTPS listeners ARNs"
-  type        = list(string)
+variable "alb_https_listener_arn" {
+  description = "HTTPS listener ARN"
+  type        = string
 }
 
 //variable "alb_routing_priority" {
