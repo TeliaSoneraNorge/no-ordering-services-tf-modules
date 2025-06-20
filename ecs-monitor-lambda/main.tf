@@ -101,7 +101,7 @@ resource "aws_ssm_parameter" "rmtool_basicauth" {
 
 resource "aws_lambda_function" "ecs-monitor-lambda" {
   function_name = local.ecs_monitor_lambda_name
-  description   = "ECS deploy monitor lambda"
+  description   = "ECS deployment monitor lambda"
   filename      = data.archive_file.ecs-monitor-lambda_zip.output_path
   memory_size   = 128
   timeout       = 900
