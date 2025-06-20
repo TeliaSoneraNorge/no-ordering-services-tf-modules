@@ -2,6 +2,8 @@ locals {
   ecs_cleaner_lambda_name = "ecs-task-definition-cleaner-lambda"
 }
 
+data "aws_region" "current" {}
+
 data "aws_iam_policy_document" "ecs_cleaner_lambda_assume" {
   statement {
     effect = "Allow"
@@ -21,7 +23,7 @@ data "aws_iam_policy_document" "ecs_cleaner_lambda_assume" {
 }
 
 resource "aws_iam_role" "ecs_cleaner_lambda_role" {
-  name               = "${local.ecs_cleaner_lambda_name}-role"
+  name               = "${local.ecs_cleaner_lambda_name}-${data.aws_region.current.name}-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_cleaner_lambda_assume.json
   description        = "AIM role for ${local.ecs_cleaner_lambda_name}"
 
@@ -97,7 +99,7 @@ data "aws_iam_policy_document" "ecs_cleaner_policy_document" {
 }
 
 resource "aws_iam_role_policy" "ecs_cleaner_role_policy" {
-  name   = "${local.ecs_cleaner_lambda_name}-policy"
+  name   = "${local.ecs_cleaner_lambda_name}-${data.aws_region.current.name}-policy"
   role   = aws_iam_role.ecs_cleaner_lambda_role.name
   policy = data.aws_iam_policy_document.ecs_cleaner_policy_document.json
 }

@@ -3,7 +3,6 @@ variable "tags" {
   type        = map(string)
 }
 
-
 variable "old_revision_count" {
   description = "How many old revisions should be preserved"
   type        = string
