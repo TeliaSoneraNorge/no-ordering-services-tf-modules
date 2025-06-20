@@ -115,12 +115,11 @@ resource "aws_lambda_function" "ecs_cleaner_lambda" {
   memory_size   = 1024
   timeout       = 300
 
-  runtime          = "python3.9"
+  runtime          = "python3.12"
   role             = aws_iam_role.ecs_cleaner_lambda_role.arn
   source_code_hash = data.archive_file.ecs_cleaner_lambda_zip.output_base64sha256
   handler          = "main.lambda_handler"
   architectures    = ["arm64"]
-  layers           = var.lambda_layers
 
   environment {
     variables = {
