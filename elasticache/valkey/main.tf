@@ -35,7 +35,7 @@ resource "aws_elasticache_replication_group" "valkey" {
 }
 
 resource "aws_security_group" "valkey" {
-  name        = "${var.env}_${var.component_id}_cache_cluster_sg"
+  name        = "${var.env}_${var.component_id}_valkey_cache_cluster_sg"
   description = "${var.env} ${var.component_id} cache Valkey cluster SG"
   vpc_id      = var.vpc_id
 
