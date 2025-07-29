@@ -185,7 +185,7 @@ variable "vpc_cidr_block" {
 
 variable "custom_cidr_blocks" {
   description = "The custom blocks to allow for RDS"
-  type        = list(string)
+  type        = set(string)
   default     = []
 }
 
