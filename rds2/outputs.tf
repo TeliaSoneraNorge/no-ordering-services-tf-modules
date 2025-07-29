@@ -22,7 +22,7 @@ output "resource_id" {
 
 output "this_db_instance_name" {
   description = "The database name"
-  value       = aws_db_instance.rds.database_name
+  value       = aws_db_instance.rds.db_name
 }
 
 output "this_db_instance_username" {
