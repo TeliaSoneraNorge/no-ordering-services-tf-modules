@@ -65,8 +65,8 @@ resource "aws_db_parameter_group" "custom_parameters" {
   tags = var.tags
 }
 
-resource "aws_db_instance" "main" {
-  depends_on                = [aws_db_subnet_group.main]
+resource "aws_db_instance" "rds" {
+  depends_on                = [aws_db_subnet_group.rds]
   identifier                = "${local.identifier}-db"
   db_name                   = var.database_name
   username                  = var.database_username
@@ -114,7 +114,7 @@ resource "aws_db_instance" "main" {
   tags = merge(var.tags, { "Name" = "${local.identifier}-db" })
 }
 
-resource "aws_db_subnet_group" "main" {
+resource "aws_db_subnet_group" "rds" {
   name        = "${local.identifier}-subnet-group"
   description = "Subnet group for ${local.identifier} RDS instance"
   subnet_ids  = var.database_subnets
