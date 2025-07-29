@@ -5,7 +5,7 @@ resource "aws_security_group" "main" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_custom_subnets" {
-  for_each          = length(var.custom_cidr_blocks) > 0 ? toset(["custom"]) : toset([])
+  for_each          = var.custom_cidr_blocks
   security_group_id = aws_security_group.main.id
 
   cidr_ipv4   = each.value
