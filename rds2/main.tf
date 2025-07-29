@@ -87,8 +87,6 @@ resource "aws_db_instance" "rds" {
   backup_retention_period   = var.backup_retention_period
   backup_window             = var.backup_window
   maintenance_window        = var.maintenance_window
-  monitoring_interval       = var.monitoring_interval
-  monitoring_role_arn       = null
   license_model             = var.license_model
   storage_encrypted         = var.storage_encrypted
   kms_key_id                = var.kms_key_id
