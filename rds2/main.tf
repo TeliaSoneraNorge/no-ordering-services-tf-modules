@@ -24,7 +24,7 @@ data "aws_db_snapshot" "manual" {
 ######
 
 resource "aws_iam_role" "enhanced_monitoring" {
-  count = var.create_monitoring_role == true || var.monitoring_interval > 0 ? 1 : 0
+  count = var.create_monitoring_role || var.monitoring_interval > 0 ? 1 : 0
 
   name_prefix        = var.monitoring_role_name
   assume_role_policy = file("${path.module}/policy/enhancedmonitoring.json")
@@ -37,7 +37,7 @@ resource "aws_iam_role" "enhanced_monitoring" {
 }
 
 resource "aws_iam_role_policy_attachment" "enhanced_monitoring" {
-  count = var.create_monitoring_role == true || var.monitoring_interval > 0 ? 1 : 0
+  count = var.create_monitoring_role || var.monitoring_interval > 0 ? 1 : 0
 
   role       = join("", aws_iam_role.enhanced_monitoring.*.name)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
@@ -88,7 +88,7 @@ resource "aws_db_instance" "rds" {
   backup_window             = var.backup_window
   maintenance_window        = var.maintenance_window
   monitoring_interval       = var.monitoring_interval
-  monitoring_role_arn       = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : null
+  monitoring_role_arn       = var.create_monitoring_role ? join("", aws_iam_role.enhanced_monitoring.*.arn) : null
   license_model             = var.license_model
   storage_encrypted         = var.storage_encrypted
   kms_key_id                = var.kms_key_id
