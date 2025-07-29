@@ -1,6 +1,6 @@
 resource "aws_ssm_parameter" "database_url" {
   name  = "/${var.environment}/${local.identifier}/${var.database_name}/db/url"
-  value = module.rds.endpoint
+  value = aws_db_instance.rds.endpoint
   type  = "String"
   tags  = var.tags
 }

@@ -11,7 +11,6 @@ resource "random_password" "generated_db_password" {
   special = var.password_use_special
 }
 
-
 data "aws_db_snapshot" "manual" {
   count = var.manual_db_snapshot_identifier == "" ? 0 : 1
 
@@ -80,7 +79,7 @@ resource "aws_db_instance" "rds" {
   storage_type              = "gp3"
   allocated_storage         = var.allocated_storage
   snapshot_identifier       = join("", data.aws_db_snapshot.manual.*.db_snapshot_arn)
-  final_snapshot_identifier = "${local.identifier}-final-${random_string.suffix.id}"
+  final_snapshot_identifier = "${local.identifier}-final"
   skip_final_snapshot       = true
   publicly_accessible       = false
   vpc_security_group_ids    = [aws_security_group.main.id]

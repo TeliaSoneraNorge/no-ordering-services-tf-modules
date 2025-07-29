@@ -47,10 +47,10 @@ output "this_db_parameter_group_arn" {
 
 output "this_db_subnet_group_id" {
   description = "The db subnet group name"
-  value       = aws_db_subnet_group.rds.subnet_group_id
+  value       = aws_db_subnet_group.rds.id
 }
 
 output "this_db_subnet_group_arn" {
   description = "The ARN of the db subnet group"
-  value       = aws_db_subnet_group.rds.subnet_group_arn
+  value       = aws_db_subnet_group.rds.arn
 }
