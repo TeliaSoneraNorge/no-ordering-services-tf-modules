@@ -88,7 +88,7 @@ resource "aws_db_instance" "rds" {
   backup_window             = var.backup_window
   maintenance_window        = var.maintenance_window
   monitoring_interval       = var.monitoring_interval
-  monitoring_role_arn       = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : ""
+  monitoring_role_arn       = var.create_monitoring_role == true || var.monitoring_interval > 0 ? join("", aws_iam_role.enhanced_monitoring.*.arn) : null
   license_model             = var.license_model
   storage_encrypted         = var.storage_encrypted
   kms_key_id                = var.kms_key_id
