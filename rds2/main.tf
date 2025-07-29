@@ -92,11 +92,12 @@ resource "aws_db_instance" "rds" {
   kms_key_id                = var.kms_key_id
   deletion_protection       = var.deletion_protection
   ca_cert_identifier        = var.ca_cert_identifier
+  monitoring_interval       = var.monitoring_interval
+  monitoring_role_arn       = var.create_monitoring_role ? join("", aws_iam_role.enhanced_monitoring.*.arn) : null
 
   apply_immediately = var.apply_immediately
 
   # New params
-  domain                                = var.domain
   allow_major_version_upgrade           = false
   auto_minor_version_upgrade            = true
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
