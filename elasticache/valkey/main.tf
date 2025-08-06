@@ -1,6 +1,9 @@
 resource "random_string" "password" {
   length  = 20
-  special = false
+  special = true
+  upper   = true
+  lower   = true
+  override_special = "!#$%^&*()-_=+[]{}|;:,.?<>"
 }
 
 resource "aws_ssm_parameter" "secret" {
@@ -27,7 +30,7 @@ resource "aws_elasticache_replication_group" "valkey" {
   subnet_group_name          = aws_elasticache_subnet_group.subnet_group.name
   at_rest_encryption_enabled = true
   transit_encryption_enabled = true
-  auth_token                 = aws_ssm_parameter.secret.name
+  auth_token                 = aws_ssm_parameter.secret.value
   tags                       = var.tags
 }
 
@@ -53,13 +56,6 @@ resource "aws_security_group" "valkey" {
       protocol    = "tcp"
       cidr_blocks = var.custom_cidr_blocks
     }
-  }
-
-  egress {
-    from_port   = var.port
-    to_port     = var.port
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
   }
 
   tags = var.tags
