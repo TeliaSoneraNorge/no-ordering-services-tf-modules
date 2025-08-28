@@ -1,9 +1,9 @@
 resource "random_string" "password" {
   length  = 20
-  special = true
+  special = false
   upper   = true
   lower   = true
-  override_special = "!#$%^&*()-_=+[]{}|;:,.?<>"
+  numeric = true
 }
 
 resource "aws_ssm_parameter" "secret" {
