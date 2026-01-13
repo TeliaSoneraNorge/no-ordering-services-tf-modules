@@ -25,6 +25,20 @@ data "aws_iam_policy_document" "task_permissions" {
       "logs:PutLogEvents",
     ]
   }
+
+  # Allow access to all parameter store parameters with the specified prefix
+  statement {
+    effect = "Allow"
+
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${var.account_id}:parameter/${var.name_prefix}/*"
+    ]
+
+    actions = [
+      "ssm:GetParametersByPath",
+      "ssm:GetParameter"
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "ecs_exec_for_debugging" {
