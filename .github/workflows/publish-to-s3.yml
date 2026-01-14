@@ -1,0 +1,33 @@
+name: Publish artifacts to S3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read    # This is required for actions/checkout
+  actions: read
+
+jobs:
+  publish-to-s3:
+    # Only for tags which will be used as versioned releases
+    if: startsWith(github.ref, 'refs/tags/')
+    name: Publish zipped artifacts to S3
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: Zip terraform modules
+        run: ./github/scripts/zip-modules.sh
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.PROD_ASSUME_ROLE_ARN }}
+          role-session-name: prod-publish-s3
+          aws-region: eu-west-1
+
+      - name: Publish to S3
+        run: |
+          aws s3 sync ./artifacts s3://no-ordering-services-tf-modules/"$GITHUB_REF"/
