@@ -35,4 +35,4 @@ jobs:
 
       - name: Publish to S3
         run: |
-          aws s3 sync ./artifacts s3://no-ordering-services-tf-modules/${{ inputs.version }}/
+          aws s3 sync ./artifacts/ s3://no-ordering-services-tf-modules/${{ inputs.version }}/
