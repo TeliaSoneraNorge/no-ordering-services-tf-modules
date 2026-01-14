@@ -26,6 +26,7 @@ jobs:
       - name: Zip terraform modules
         run: |
           pwd
+          ls -la
           bash .github/scripts/zip-modules.sh
 
       - name: configure aws credentials
