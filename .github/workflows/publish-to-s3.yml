@@ -24,7 +24,9 @@ jobs:
           ref: ${{ inputs.version }}
 
       - name: Zip terraform modules
-        run: bash .github/scripts/zip-modules.sh
+        run: |
+          pwd
+          bash .github/scripts/zip-modules.sh
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
