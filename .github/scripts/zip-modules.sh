@@ -14,7 +14,7 @@ for dir in */; do
     fi
     
     # Zip the directory and place it in artifacts
-    zip -r "artifacts/${dir_name}.zip" "$dir_name"
+    (cd ${dir_name} && zip -r "../artifacts/${dir_name}.zip" . )
     
     echo "Packaged: ${dir_name}.zip"
 done
