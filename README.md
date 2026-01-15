@@ -8,6 +8,8 @@ Running the [publish-to-s3 workflow](https://github.com/TeliaSoneraNorge/no-orde
 
 To release a new version, create a release with a tag in Github, document the changes in the release, and then run the publish-to-s3 workflow by specifying the reference tag version. This will result publishing to a versioned sub-directory, i.e. `s3://no-ordering-services-tf-modules/v3.0.1/`.
 
+The S3 bucket is in telia-no-neo-prod (566762268967) AWS account and has a bucket policy that allows retrieving of the artifacts for spesific NEO AWS accounts. 
+
 # Use from terraform
 
 Example:
