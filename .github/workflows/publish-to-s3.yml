@@ -9,9 +9,7 @@ permissions:
   actions: read
 
 jobs:
-  publish-to-s3:
-    # Only for tags which will be used as versioned releases
-    if: startsWith(github.ref, 'refs/tags/')
+  publish-to-s3:  
     name: Publish zipped artifacts to S3
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Zip terraform modules
-        run: ./github/scripts/zip-modules.sh
+        run: .github/scripts/zip-modules.sh
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -28,6 +26,12 @@ jobs:
           role-session-name: prod-publish-s3
           aws-region: eu-west-1
 
-      - name: Publish to S3
+      - name: Publish spesific version S3
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          aws s3 sync ./artifacts s3://no-ordering-services-tf-modules/"$GITHUB_REF"/
+          aws s3 sync ./artifacts/ s3://no-ordering-services-tf-modules/"${GITHUB_REF#refs/tags/}"/
+
+      - name: Publish latest version to S3
+        if: github.ref == 'refs/heads/master'
+        run: |
+          aws s3 sync ./artifacts/ s3://no-ordering-services-tf-modules/latest/
